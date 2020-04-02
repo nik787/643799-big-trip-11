@@ -318,38 +318,36 @@ const tripDayEventTemplate = () => {
   );
 };
 
-
-
-const pageBody = document.querySelector('.page-body');
-const pageHeader = pageBody.querySelector('.page-header');
-const pageHeaderTripMain = pageHeader.querySelector('.trip-main');
+const pageBody = document.querySelector(`.page-body`);
+const pageHeader = pageBody.querySelector(`.page-header`);
+const pageHeaderTripMain = pageHeader.querySelector(`.trip-main`);
 
 render(pageHeaderTripMain, tripInfoContainerTemplate(), `afterbegin`);
 
-const TripInfoContainer = pageHeaderTripMain.querySelector('.trip-info');
+const TripInfoContainer = pageHeaderTripMain.querySelector(`.trip-info`);
 
 render(TripInfoContainer, tripInfoMainTemplate());
 render(TripInfoContainer, tripInfoCostTemplate());
 
-const tripMainControl = pageHeaderTripMain.querySelector('.trip-main__trip-controls');
-const tripMainNavTitle = tripMainControl.querySelector('h2');
+const tripMainControl = pageHeaderTripMain.querySelector(`.trip-main__trip-controls`);
+const tripMainNavTitle = tripMainControl.querySelector(`h2`);
 
 render(tripMainNavTitle, tripMainNavTemplate(), `afterend`);
 render(tripMainControl, tripMainFilterTemplate());
 
-const pageMain = pageBody.querySelector('.page-body__page-main');
-const pageMainContainer = pageMain.querySelector('.page-body__container');
-const tripEvents = pageMainContainer.querySelector('.trip-events');
+const pageMain = pageBody.querySelector(`.page-body__page-main`);
+const pageMainContainer = pageMain.querySelector(`.page-body__container`);
+const tripEvents = pageMainContainer.querySelector(`.trip-events`);
 
 render(tripEvents, tripSortTemplate());
 render(tripEvents, tripEventEditTemplate());
 render(tripEvents, tripDaysListTemplate());
 
-const tripDays = tripEvents.querySelector('.trip-days');
+const tripDays = tripEvents.querySelector(`.trip-days`);
 
 render(tripDays, tripDayTemplate());
 
-const tripDayEvents = tripDays.querySelector('.trip-events__list');
+const tripDayEvents = tripDays.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < COUNT_EVENT; i++) {
   render(tripDayEvents, tripDayEventTemplate());
