@@ -1,11 +1,12 @@
-export const tripDayEventTemplate = () => {
+export const tripDayEventTemplate = (event) => {
+  const {cities, title, type} = event;
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type === `check` ? `check-in` : type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">Taxi to Amsterdam</h3>
+        <h3 class="event__title">${title}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
