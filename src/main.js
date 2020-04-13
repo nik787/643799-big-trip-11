@@ -10,11 +10,8 @@ import {tripDayTemplate} from "./components/day.js";
 import {tripDayEventTemplate} from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
 
-const COUNT_EVENT = 3;
+const COUNT_EVENT = 20;
 const events = generateEvents(COUNT_EVENT);
-console.log(events);
-
-
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -42,7 +39,7 @@ const pageMainContainer = pageMain.querySelector(`.page-body__container`);
 const tripEvents = pageMainContainer.querySelector(`.trip-events`);
 
 render(tripEvents, tripSortTemplate());
-render(tripEvents, tripEventEditTemplate());
+render(tripEvents, tripEventEditTemplate(events[0]));
 render(tripEvents, tripDaysListTemplate());
 
 const tripDays = tripEvents.querySelector(`.trip-days`);
@@ -51,6 +48,7 @@ render(tripDays, tripDayTemplate());
 
 const tripDayEvents = tripDays.querySelector(`.trip-events__list`);
 
-for (let i = 0; i < COUNT_EVENT; i++) {
+for (let i = 1; i < COUNT_EVENT; i++) {
   render(tripDayEvents, tripDayEventTemplate(events[i]));
 }
+
