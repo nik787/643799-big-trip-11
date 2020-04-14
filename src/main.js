@@ -12,9 +12,6 @@ import {generateEvents} from "./mock/event.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
-console.log(events);
-
-
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);

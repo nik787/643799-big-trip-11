@@ -1,4 +1,3 @@
-import {getUnique} from "./utils.js";
 const availableOffersTemplate = (events) => {
   return events.map((event) => {
     return event.isChecked ?
