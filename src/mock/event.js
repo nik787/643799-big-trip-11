@@ -1,16 +1,33 @@
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomDate} from "../components/utils.js";
 
-const typeEvents = [
+const quantityPhotos = {
+  MIN: 1,
+  MAX: 5
+};
+
+const costEvent = {
+  MIN: 0,
+  MAX: 1000
+};
+
+const typeEventsTranfer = [
   `Taxi`,
   `Bus`,
   `Train`,
   `Ship`,
   `Transport`,
   `Drive`,
-  `Flight`,
-  `Check`,
+  `Flight`
+];
+const typeEventsActivity = [
+  `Check-in`,
   `Sightseeing`,
   `Restaurant`
+];
+
+const typeEvents = [
+  ...typeEventsTranfer,
+  ...typeEventsActivity
 ];
 
 const cities = [
@@ -20,36 +37,36 @@ const cities = [
   `Saint Petersburg`
 ];
 
-const availableOffers = () =>[
+const availableOffers = () => [
   {
     type: `luggage`,
     title: `Add luggage`,
     price: 30,
-    isChecked: getRandomIntegerNumber(0, 3)
+    isChecked: Math.random() > 0.5
   },
   {
     type: `comfort`,
     title: `Switch to comfort class`,
     price: 100,
-    isChecked: getRandomIntegerNumber(0, 3)
+    isChecked: Math.random() > 0.5
   },
   {
     type: `meal`,
     title: `Add meal`,
     price: 15,
-    isChecked: getRandomIntegerNumber(0, 3)
+    isChecked: Math.random() > 0.5
   },
   {
     type: `seats`,
     title: `Choose seats`,
     price: 5,
-    isChecked: getRandomIntegerNumber(0, 3)
+    isChecked: Math.random() > 0.5
   },
   {
     type: `train`,
     title: `Travel by train`,
     price: 40,
-    isChecked: getRandomIntegerNumber(0, 3)
+    isChecked: Math.random() > 0.5
   }
 ];
 
@@ -65,31 +82,41 @@ const description = [
   `Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`
 ];
 
-const generatePhoto = () => {
-  return `http://picsum.photos/248/152?r=${Math.random()}`;
-};
+const generatePhotos = (count = quantityPhotos.MIN) => {
+  const photos = [];
 
-const generatePhotos = (count = 1) => {
-  return new Array(count)
-    .fill(``)
-    .map(generatePhoto);
-};
+  for (let i = 0; i < count; i++) {
+    photos.push(`http://picsum.photos/248/152?r=${Math.random()}`);
+  }
 
-const generateAvailableOffers = () => {
-  return availableOffers();
+  return photos;
 };
 
 const generateEvent = () => {
   const typeEvent = getRandomArrayItem(typeEvents);
   const citiesEvent = getRandomArrayItem(cities);
+  let titles = typeEventsActivity.includes(typeEvent) ? `${typeEvent} in ${citiesEvent}` : `${typeEvent} to ${citiesEvent}`;
+  const date = getRandomDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const _duration = getRandomIntegerNumber(10, 50);
   return {
     type: typeEvent,
     cities: citiesEvent,
-    title: `${typeEvent} to ${citiesEvent}`,
-    events: generateAvailableOffers(),
+    title: titles,
+    events: availableOffers(),
     description: getRandomArrayItem(description),
-    photos: generatePhotos(getRandomIntegerNumber(0, 4)),
-    date: getRandomDate()
+    photos: generatePhotos(getRandomIntegerNumber(quantityPhotos.MIN, quantityPhotos.MAX)),
+    date: {
+      mounth: date.getMonth(),
+      day: date.getDay(),
+      time: {
+        start: `${hours} : ${minutes < 10 ? `0${minutes}` : `${minutes}`}`,
+        finish: `${hours} : ${minutes + _duration}`,
+        duration: _duration
+      }
+    },
+    price: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX)
   };
 };
 
@@ -99,4 +126,4 @@ const generateEvents = (count) => {
     .map(generateEvent);
 };
 
-export {generateEvent, generateEvents, availableOffers};
+export {generateEvent, generateEvents, availableOffers, typeEventsTranfer, typeEventsActivity, typeEvents};

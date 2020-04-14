@@ -13,7 +13,7 @@ const getRandomArray = (array) => {
   const newArray = [];
   const count = getRandomIntegerNumber(minElement, array.length);
   for (let i = 0; i < count; i++) {
-    newArray.push(getRandomArrayItem(array));
+    newArray.push(array[i]);
   }
   return newArray;
 };
@@ -28,4 +28,16 @@ const getRandomDate = () => {
   return targetDate;
 };
 
-export {getRandomIntegerNumber, getRandomArrayItem, getRandomArray, getRandomDate};
+const getUnique = (arr) => {
+  let result = [];
+
+  for (let str of arr) {
+    if (!result.includes(str)) {
+      result.push(str);
+    }
+  }
+
+  return result;
+};
+
+export {getRandomIntegerNumber, getRandomArrayItem, getRandomArray, getRandomDate, getUnique};

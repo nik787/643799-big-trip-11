@@ -1,33 +1,27 @@
-const availableOffer = (event) => {
-  return (
-    `<li class="event__offer">
-      <span class="event__offer-title">${event.title}</span>
-      &plus;
-      &euro;&nbsp;<span class="event__offer-price">${event.price}</span>
-    </li>`
-  );
-};
-
-const availableOffers = (events) => {
-  let str = ``;
-  events.forEach((event) => {
-    if (event.isChecked) {
-      str += availableOffer(event);
-    }
-  });
-  return str;
+import {getUnique} from "./utils.js";
+const availableOffersTemplate = (events) => {
+  return events.map((event) => {
+    return event.isChecked ?
+      `<li class="event__offer">
+        <span class="event__offer-title">${event.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${event.price}</span>
+      </li>` : ``;
+  }).join(``);
 };
 
 export const tripDayEventTemplate = (event) => {
-  const {title, type, events} = event;
-  let price = 0;
+  const {title, type, events, price, date} = event;
+  let _price = price;
+  let _date = date;
+
 
   events.forEach((element) => {
     if (element.isChecked) {
-      price += element.price;
-
+      _price += element.price;
     }
   });
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -38,20 +32,20 @@ export const tripDayEventTemplate = (event) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${_date.time.start}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${_date.time.finish}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${_date.time.duration}M</p>
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
+          &euro;&nbsp;<span class="event__price-value">${_price}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${availableOffers(events)}
+          ${availableOffersTemplate(events)}
         </ul>
 
         <button class="event__rollup-btn" type="button">

@@ -1,10 +1,9 @@
-import {availableOffers} from "../mock/event.js";
+import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
+
 const eventPhotosTemplate = (photos) => {
-  let str = ``;
-  photos.forEach((photo) => {
-    str += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-  });
-  return str;
+  return photos.map((photo) => {
+    return (`<img class="event__photo" src="${photo}" alt="Event photo">`);
+  }).join(``);
 };
 
 const destinationTemplate = (event) => {
@@ -23,39 +22,52 @@ const destinationTemplate = (event) => {
   );
 };
 
-const offerTemplate = (offer) => {
-
-  let isChecked = (offer.isChecked) ? `checked` : ``;
-  return (
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" ${isChecked}>
-      <label class="event__offer-label" for="event-offer-${offer.type}-1">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`
-  );
-};
 
 const offersTemplate = (offers) => {
-  let str = ``;
-  offers.forEach((element) => {
-    str += offerTemplate(element);
-  });
-  return str;
+  return offers.map((offer) => {
+    let isChecked = (offer.isChecked) ? `checked` : ``;
+
+    return (
+      `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" ${isChecked}>
+        <label class="event__offer-label" for="event-offer-${offer.type}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`
+    );
+  }).join(``);
+};
+
+const eventTypeTemplate = (types) => {
+  return types.map((element) => {
+    const _type = element.toLowerCase();
+
+    return (
+      `<div class="event__type-item">
+        <input id="event-type-${_type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${_type}" ${typeEvents.includes(element) ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${_type}" for="event-type-${_type}-1">${element}</label>
+      </div>`
+    );
+  }).join(``);
 };
 
 export const tripEventEditTemplate = (event) => {
-  const {type, cities} = event;
+  const {type, cities, events, price} = event;
 
+  let _price = price;
+
+  events.forEach((element) => {
+    _price += element.price;
+  });
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type === `Check` ? `check-in` : type}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -63,66 +75,20 @@ export const tripEventEditTemplate = (event) => {
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
 
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
+              ${eventTypeTemplate(typeEventsTranfer)}
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
 
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
+              ${eventTypeTemplate(typeEventsActivity)}
             </fieldset>
           </div>
         </div>
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${type === `Check` ? `Check-in` : type} to
+            ${type === `Check` ? `Check-in` : type} ${typeEventsActivity.includes(type) ? `in` : `to`}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cities}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -150,7 +116,7 @@ export const tripEventEditTemplate = (event) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${_price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -161,7 +127,7 @@ export const tripEventEditTemplate = (event) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${offersTemplate(availableOffers())}
+            ${offersTemplate(events)}
           </div>
         </section>
         ${destinationTemplate(event)}

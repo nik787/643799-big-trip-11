@@ -10,8 +10,11 @@ import {tripDayTemplate} from "./components/day.js";
 import {tripDayEventTemplate} from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
 
-const COUNT_EVENT = 20;
+const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
+console.log(events);
+
+
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -25,8 +28,7 @@ render(pageHeaderTripMain, tripInfoContainerTemplate(), `afterbegin`);
 
 const TripInfoContainer = pageHeaderTripMain.querySelector(`.trip-info`);
 
-render(TripInfoContainer, tripInfoMainTemplate());
-render(TripInfoContainer, tripInfoCostTemplate());
+render(TripInfoContainer, tripInfoMainTemplate(events));
 
 const tripMainControl = pageHeaderTripMain.querySelector(`.trip-main__trip-controls`);
 const tripMainNavTitle = tripMainControl.querySelector(`h2`);
@@ -52,3 +54,11 @@ for (let i = 1; i < COUNT_EVENT; i++) {
   render(tripDayEvents, tripDayEventTemplate(events[i]));
 }
 
+let price = 0;
+
+let priceEvents = tripDayEvents.querySelectorAll(`.event__price-value`);
+priceEvents.forEach((element) => {
+  price += +element.innerHTML;
+});
+
+render(TripInfoContainer, tripInfoCostTemplate(price));
