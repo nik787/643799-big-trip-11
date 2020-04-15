@@ -1,3 +1,5 @@
+import {getTimeString, getTimeDurationString} from "./utils.js";
+
 const availableOffersTemplate = (events) => {
   return events.map((event) => {
     return event.isChecked ?
@@ -12,8 +14,8 @@ const availableOffersTemplate = (events) => {
 export const tripDayEventTemplate = (event) => {
   const {title, type, events, price, date} = event;
   let _price = price;
-  let _date = date;
-
+  const _dateStart = date.start;
+  const _dateFinish = date.finish;
 
   events.forEach((element) => {
     if (element.isChecked) {
@@ -25,17 +27,17 @@ export const tripDayEventTemplate = (event) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type === `Check` ? `check-in` : type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${title}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${_date.time.start}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${getTimeString(_dateStart)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${_date.time.finish}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${getTimeString(_dateFinish)}</time>
           </p>
-          <p class="event__duration">${_date.time.duration}M</p>
+          <p class="event__duration">${getTimeDurationString(_dateStart, _dateFinish)}</p>
         </div>
 
         <p class="event__price">

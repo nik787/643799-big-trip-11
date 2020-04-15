@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber, getRandomArrayItem, getRandomDate} from "../components/utils.js";
+import {getRandomIntegerNumber, getRandomArrayItem, getRandomDate, getRandomDuration} from "../components/utils.js";
 
 const quantityPhotos = {
   MIN: 1,
@@ -92,14 +92,15 @@ const generatePhotos = (count = quantityPhotos.MIN) => {
   return photos;
 };
 
+const sortDay = (a, b) => a.date.start.getDate() - b.date.start.getDate();
+
 const generateEvent = () => {
   const typeEvent = getRandomArrayItem(typeEvents);
   const citiesEvent = getRandomArrayItem(cities);
   let titles = typeEventsActivity.includes(typeEvent) ? `${typeEvent} in ${citiesEvent}` : `${typeEvent} to ${citiesEvent}`;
-  const date = getRandomDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const _duration = getRandomIntegerNumber(10, 50);
+  const dateStart = getRandomDate();
+  const dateFinish = getRandomDuration(dateStart);
+
   return {
     type: typeEvent,
     cities: citiesEvent,
@@ -108,13 +109,8 @@ const generateEvent = () => {
     description: getRandomArrayItem(description),
     photos: generatePhotos(getRandomIntegerNumber(quantityPhotos.MIN, quantityPhotos.MAX)),
     date: {
-      mounth: date.getMonth(),
-      day: date.getDay(),
-      time: {
-        start: `${hours} : ${minutes < 10 ? `0${minutes}` : `${minutes}`}`,
-        finish: `${hours} : ${minutes + _duration}`,
-        duration: _duration
-      }
+      start: dateStart,
+      finish: dateFinish
     },
     price: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX)
   };
@@ -123,7 +119,8 @@ const generateEvent = () => {
 const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
-    .map(generateEvent);
+    .map(generateEvent)
+    .sort(sortDay);
 };
 
 export {generateEvent, generateEvents, availableOffers, typeEventsTranfer, typeEventsActivity, typeEvents};

@@ -1,3 +1,4 @@
+import {getDateString, getTimeString} from "./utils.js";
 import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
 
 const eventPhotosTemplate = (photos) => {
@@ -54,10 +55,11 @@ const eventTypeTemplate = (types) => {
 };
 
 export const tripEventEditTemplate = (event) => {
-  const {type, cities, events, price} = event;
+  const {type, cities, events, price, date} = event;
 
   let _price = price;
-
+  const _dateStart = date.start;
+  const _dateFinish = date.finish;
   events.forEach((element) => {
     _price += element.price;
   });
@@ -103,12 +105,12 @@ export const tripEventEditTemplate = (event) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateString(_dateStart)} ${getTimeString(_dateStart)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateString(_dateFinish)} ${getTimeString(_dateFinish)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
