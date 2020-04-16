@@ -1,22 +1,18 @@
-import {tripInfoContainerTemplate} from "./components/info-container.js";
-import {tripInfoMainTemplate} from "./components/info-main.js";
-import {tripInfoCostTemplate} from "./components/info-cost.js";
-import {tripMainNavTemplate} from "./components/main-nav.js";
-import {tripMainFilterTemplate} from "./components/main-filter.js";
-import {tripSortTemplate} from "./components/sorting.js";
-import {tripEventEditTemplate} from "./components/event-edit.js";
-import {tripDaysListTemplate} from "./components/days-list.js";
-import {tripDayTemplate} from "./components/day.js";
-import {tripDayEventTemplate} from "./components/day-event.js";
+import InfoContainerComponent from "./components/info-container.js";
+import InfoMainComponent from "./components/info-main.js";
+import CostComponent from "./components/info-cost.js";
+import NavigationComponent from "./components/main-nav.js";
+import FilterComponent from "./components/main-filter.js";
+import SortComponent from "./components/sorting.js";
+import EventEditComponent from "./components/event-edit.js";
+import DaysComponent from "./components/days-list.js";
+import DayComponent from "./components/day.js";
+import DayEventComponent from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
 import {render, RenderPosition} from "./utils.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
-
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const pageBody = document.querySelector(`.page-body`);
 const pageHeader = pageBody.querySelector(`.page-header`);
