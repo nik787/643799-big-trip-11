@@ -1,4 +1,4 @@
-import {getTimeString, getTimeDurationString} from "./utils.js";
+import {createElement, getTimeString, getTimeDurationString} from "../utils.js";
 
 const availableOffersTemplate = (events) => {
   return events.map((event) => {
@@ -11,7 +11,7 @@ const availableOffersTemplate = (events) => {
   }).join(``);
 };
 
-export const tripDayEventTemplate = (event) => {
+const tripDayEventTemplate = (event) => {
   const {title, type, events, price, date} = event;
   let _price = price;
   const _dateStart = date.start;
@@ -56,3 +56,27 @@ export const tripDayEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class DayEvent {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return tripDayEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

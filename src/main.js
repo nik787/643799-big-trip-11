@@ -9,6 +9,7 @@ import {tripDaysListTemplate} from "./components/days-list.js";
 import {tripDayTemplate} from "./components/day.js";
 import {tripDayEventTemplate} from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
+import {render, RenderPosition} from "./utils.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);

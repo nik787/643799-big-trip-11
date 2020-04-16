@@ -1,5 +1,6 @@
-import {getUnique, getMounthString} from "./utils.js";
-export const tripInfoMainTemplate = (events) => {
+import {createElement, getUnique, getMounthString} from "../utils.js";
+
+const tripInfoMainTemplate = (events) => {
   let cities = [];
   let fullCities = [];
   let days = [];
@@ -20,3 +21,26 @@ export const tripInfoMainTemplate = (events) => {
     </div>`
   );
 };
+
+export default class InfoMain {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return tripInfoMainTemplate(this.events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

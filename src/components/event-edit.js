@@ -1,4 +1,4 @@
-import {getDateString, getTimeString} from "./utils.js";
+import {createElement, getDateString, getTimeString} from "../utils.js";
 import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
 
 const eventPhotosTemplate = (photos) => {
@@ -54,7 +54,7 @@ const eventTypeTemplate = (types) => {
   }).join(``);
 };
 
-export const tripEventEditTemplate = (event) => {
+const tripEventEditTemplate = (event) => {
   const {type, cities, events, price, date} = event;
 
   let _price = price;
@@ -138,3 +138,27 @@ export const tripEventEditTemplate = (event) => {
     </form>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return tripEventEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
