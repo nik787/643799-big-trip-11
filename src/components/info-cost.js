@@ -1,6 +1,15 @@
 import {createElement} from "../utils.js";
 
-const tripInfoCostTemplate = (price) => {
+const tripInfoCostTemplate = (events) => {
+  let price = 0;
+  events.forEach((element) => {
+    price += element.price;
+    element.events.forEach((event) => {
+      if (event.isChecked) {
+        price += event.price;
+      }
+    });
+  });
 
   return (
     `<p class="trip-info__cost">
@@ -10,13 +19,13 @@ const tripInfoCostTemplate = (price) => {
 };
 
 export default class Cost {
-  constructor(price) {
-    this._price = price;
+  constructor(events) {
+    this._events = events;
     this._element = null;
   }
 
   getTemplate() {
-    return tripInfoCostTemplate(this._price);
+    return tripInfoCostTemplate(this._events);
   }
 
   getElement() {

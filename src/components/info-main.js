@@ -29,7 +29,7 @@ export default class InfoMain {
   }
 
   getTemplate() {
-    return tripInfoMainTemplate(this.events);
+    return tripInfoMainTemplate(this._events);
   }
 
   getElement() {
