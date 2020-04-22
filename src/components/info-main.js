@@ -1,15 +1,18 @@
-import {createElement, getUnique, getMounthString} from "../utils.js";
+import {createElement, getUnique, getMonthString} from "../utils.js";
 
 const tripInfoMainTemplate = (events) => {
   let cities = [];
   let fullCities = [];
   let days = [];
-  events.forEach((element) => {
-    fullCities.push(element.cities);
-    days.push(element.date.start.getDate());
+  events.forEach((eventList) => {
+    eventList.forEach((event) => {
+      fullCities.push(event.cities);
+      days.push(event.date.start.getDate());
+    });
   });
   cities = getUnique(fullCities);
-  const mounth = getMounthString(events[0].date.start);
+
+  const mounth = getMonthString(events[0][0].date.start);
 
   const title = `${cities.length > 3 ? `${fullCities[0]} &mdash; ... &mdash; ${fullCities[fullCities.length - 1]}` : `${fullCities[0]} &mdash; ${cities[1]} &mdash; ${fullCities[cities.length - 1]}`}`;
 

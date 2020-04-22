@@ -9,14 +9,18 @@ import DaysComponent from "./components/days-list.js";
 import DayComponent from "./components/day.js";
 import DayEventComponent from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
-import {render, RenderPosition} from "./utils.js";
+import {render, RenderPosition, sortEvents} from "./utils.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
+const sortEvt = sortEvents(events);
 
 const pageBody = document.querySelector(`.page-body`);
 const pageHeader = pageBody.querySelector(`.page-header`);
 const pageHeaderTripMain = pageHeader.querySelector(`.trip-main`);
+const pageMain = pageBody.querySelector(`.page-body__page-main`);
+const pageMainContainer = pageMain.querySelector(`.page-body__container`);
+const tripEvents = pageMainContainer.querySelector(`.trip-events`);
 
 const renderPageHeader = (eventList) => {
   const pageHeaderComponent = new InfoContainerComponent();
@@ -31,24 +35,49 @@ const renderPageHeader = (eventList) => {
   render(tripMainControl, new FilterComponent().getElement());
 };
 
-renderPageHeader(events);
+const renderPageMain = (evt) => {
+  render(tripEvents, new SortComponent().getElement());
+  render(tripEvents, new DaysComponent(evt).getElement());
+};
 
+const renderEvent = (component, event) => {
+  const onEditButtonClick = () => {
+    component.replaceChild(eventEditComponent.getElement(), dayEventComponent.getElement());
+  };
 
-// const pageMain = pageBody.querySelector(`.page-body__page-main`);
-// const pageMainContainer = pageMain.querySelector(`.page-body__container`);
-// const tripEvents = pageMainContainer.querySelector(`.trip-events`);
+  const onEditFormSubmit = (evt) => {
+    evt.preventDefault();
+    component.replaceChild(dayEventComponent.getElement(), eventEditComponent.getElement());
+  };
 
-// render(tripEvents, tripSortTemplate());
-// render(tripEvents, tripEventEditTemplate(events[0]));
-// render(tripEvents, tripDaysListTemplate());
+  const dayEventComponent = new DayEventComponent(event);
+  const editButton = dayEventComponent.getElement().querySelector(`.event__rollup-btn`);
+  editButton.addEventListener(`click`, onEditButtonClick);
 
-// const tripDays = tripEvents.querySelector(`.trip-days`);
+  const eventEditComponent = new EventEditComponent(event);
 
-// render(tripDays, tripDayTemplate());
+  const editForm = eventEditComponent.getElement().querySelector(`.event--edit`);
+  editForm.addEventListener(`submit`, onEditFormSubmit);
 
-// const tripDayEvents = tripDays.querySelector(`.trip-events__list`);
+  render(component, dayEventComponent.getElement());
+};
 
-// for (let i = 1; i < COUNT_EVENT; i++) {
-//   render(tripDayEvents, tripDayEventTemplate(events[i]));
-// }
+const renderDay = (evt, index) => {
+  const tripDays = tripEvents.querySelector(`.trip-days`);
+  const dayComponent = new DayComponent(evt, index);
+  render(tripDays, dayComponent.getElement());
+  const eventList = dayComponent.getElement().querySelector(`.trip-events__list`);
+  for (let i = 0; i < evt.length; i++) {
+    renderEvent(eventList, evt[i]);
+  }
+};
 
+const renderDays = (evt) => {
+  evt.forEach((eventsList, index) => {
+    renderDay(eventsList, index);
+  });
+};
+
+renderPageHeader(sortEvt);
+renderPageMain(sortEvt);
+renderDays(sortEvt);

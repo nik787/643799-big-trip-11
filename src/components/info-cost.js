@@ -2,12 +2,14 @@ import {createElement} from "../utils.js";
 
 const tripInfoCostTemplate = (events) => {
   let price = 0;
-  events.forEach((element) => {
-    price += element.price;
-    element.events.forEach((event) => {
-      if (event.isChecked) {
-        price += event.price;
-      }
+  events.forEach((eventsList) => {
+    eventsList.forEach((event) => {
+      price += event.price;
+      event.events.forEach((element) => {
+        if (element.isChecked) {
+          price += element.price;
+        }
+      });
     });
   });
 

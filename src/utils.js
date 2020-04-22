@@ -1,9 +1,10 @@
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
   BEFOREEND: `beforeend`
 };
 
-const mounths = [
+const months = [
   `Jan`,
   `Feb`,
   `Mar`,
@@ -54,8 +55,8 @@ export const getTimeString = (date) => {
   return `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`;
 };
 
-export const getMounthString = (date) => {
-  return mounths[date.getMonth()];
+export const getMonthString = (date) => {
+  return months[date.getMonth()];
 };
 
 export const getTimeDurationString = (timeStart, timeFinish) => {
@@ -76,6 +77,24 @@ export const getUnique = (arr) => {
   return result;
 };
 
+export const sortEvents = (array) => {
+  let newArray = [];
+  let dateArray = [];
+  array.forEach((element) => {
+    dateArray.push(element.date.start.getDate());
+  });
+  dateArray = getUnique(dateArray);
+  for (let index = 0; index < dateArray.length; index++) {
+    newArray[index] = [];
+    for (let j = 0; j < array.length; j++) {
+      if (dateArray[index] === array[j].date.start.getDate()) {
+        newArray[index].push(array[j]);
+      }
+    }
+  }
+  return newArray;
+};
+
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -87,6 +106,9 @@ export const render = (container, element, place = RenderPosition.BEFOREEND) => 
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
