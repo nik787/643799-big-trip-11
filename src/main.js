@@ -4,6 +4,7 @@ import CostComponent from "./components/info-cost.js";
 import NavigationComponent from "./components/main-nav.js";
 import FilterComponent from "./components/main-filter.js";
 import SortComponent from "./components/sorting.js";
+import NoEventsComponent from "./components/no-events.js";
 import EventEditComponent from "./components/event-edit.js";
 import DaysComponent from "./components/days-list.js";
 import DayComponent from "./components/day.js";
@@ -14,6 +15,8 @@ import {render, RenderPosition, sortEvents} from "./utils.js";
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
 const sortEvt = sortEvents(events);
+const isAllEventsArchived = events.every((event) => event.isArchive);
+
 
 const pageBody = document.querySelector(`.page-body`);
 const pageHeader = pageBody.querySelector(`.page-header`);
@@ -36,28 +39,51 @@ const renderPageHeader = (eventList) => {
 };
 
 const renderPageMain = (evt) => {
+
+  if (isAllEventsArchived) {
+    render(tripEvents, new NoEventsComponent().getElement());
+    return;
+  }
   render(tripEvents, new SortComponent().getElement());
   render(tripEvents, new DaysComponent(evt).getElement());
+  renderDays(evt);
 };
 
 const renderEvent = (component, event) => {
-  const onEditButtonClick = () => {
+
+  const replaceEventToEdit = () => {
     component.replaceChild(eventEditComponent.getElement(), dayEventComponent.getElement());
   };
 
-  const onEditFormSubmit = (evt) => {
-    evt.preventDefault();
+  const replaceEditToEvent = () => {
     component.replaceChild(dayEventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
   const dayEventComponent = new DayEventComponent(event);
   const editButton = dayEventComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, onEditButtonClick);
+  editButton.addEventListener(`click`, () => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const eventEditComponent = new EventEditComponent(event);
 
   const editForm = eventEditComponent.getElement().querySelector(`.event--edit`);
-  editForm.addEventListener(`submit`, onEditFormSubmit);
+  editForm.addEventListener(`submit`, replaceEditToEvent);
+  editForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(component, dayEventComponent.getElement());
 };
@@ -80,4 +106,3 @@ const renderDays = (evt) => {
 
 renderPageHeader(sortEvt);
 renderPageMain(sortEvt);
-renderDays(sortEvt);
