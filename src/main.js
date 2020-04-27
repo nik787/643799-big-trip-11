@@ -10,11 +10,14 @@ import DaysComponent from "./components/days-list.js";
 import DayComponent from "./components/day.js";
 import DayEventComponent from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
-import {render, RenderPosition, sortEvents} from "./utils/utils.js";
+import {render, replace, RenderPosition} from "./utils/render.js";
+import {sortEvents} from "./utils/common.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
+
 const sortEvt = sortEvents(events);
+
 const isAllEventsArchived = events.every((event) => event.isArchive);
 
 
@@ -27,36 +30,36 @@ const tripEvents = pageMainContainer.querySelector(`.trip-events`);
 
 const renderPageHeader = (eventList) => {
   const pageHeaderComponent = new InfoContainerComponent();
-  render(pageHeaderTripMain, pageHeaderComponent.getElement(), RenderPosition.AFTERBEGIN);
+  render(pageHeaderTripMain, pageHeaderComponent, RenderPosition.AFTERBEGIN);
   const TripInfoContainer = pageHeaderTripMain.querySelector(`.trip-info`);
-  render(TripInfoContainer, new InfoMainComponent(eventList).getElement());
-  render(TripInfoContainer, new CostComponent(eventList).getElement());
+  render(TripInfoContainer, new InfoMainComponent(eventList));
+  render(TripInfoContainer, new CostComponent(eventList));
 
   const tripMainControl = pageHeaderTripMain.querySelector(`.trip-main__trip-controls`);
 
-  render(tripMainControl, new NavigationComponent().getElement(), RenderPosition.AFTERBEGIN);
-  render(tripMainControl, new FilterComponent().getElement());
+  render(tripMainControl, new NavigationComponent(), RenderPosition.AFTERBEGIN);
+  render(tripMainControl, new FilterComponent());
 };
 
 const renderPageMain = (evt) => {
 
   if (isAllEventsArchived) {
-    render(tripEvents, new NoEventsComponent().getElement());
+    render(tripEvents, new NoEventsComponent());
     return;
   }
-  render(tripEvents, new SortComponent().getElement());
-  render(tripEvents, new DaysComponent(evt).getElement());
+  render(tripEvents, new SortComponent());
+  render(tripEvents, new DaysComponent(evt));
   renderDays(evt);
 };
 
 const renderEvent = (component, event) => {
 
   const replaceEventToEdit = () => {
-    component.replaceChild(eventEditComponent.getElement(), dayEventComponent.getElement());
+    replace(eventEditComponent, dayEventComponent);
   };
 
   const replaceEditToEvent = () => {
-    component.replaceChild(dayEventComponent.getElement(), eventEditComponent.getElement());
+    replace(dayEventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -85,13 +88,13 @@ const renderEvent = (component, event) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(component, dayEventComponent.getElement());
+  render(component, dayEventComponent);
 };
 
 const renderDay = (evt, index) => {
   const tripDays = tripEvents.querySelector(`.trip-days`);
   const dayComponent = new DayComponent(evt, index);
-  render(tripDays, dayComponent.getElement());
+  render(tripDays, dayComponent);
   const eventList = dayComponent.getElement().querySelector(`.trip-events__list`);
   for (let i = 0; i < evt.length; i++) {
     renderEvent(eventList, evt[i]);

@@ -1,4 +1,4 @@
-import {getMonthString} from "../utils/utils.js";
+import {getMonthString} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const tripDayTemplate = (event, index) => {

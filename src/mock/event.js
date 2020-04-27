@@ -1,4 +1,5 @@
-import {getRandomIntegerNumber, getRandomArrayItem, getRandomDate, getRandomDuration} from "../utils/utils.js";
+import {getRandomDate, getRandomDuration} from "../utils/common.js";
+import {getRandomIntegerNumber, getRandomArrayItem} from "../utils/random.js";
 
 const quantityPhotos = {
   MIN: 1,

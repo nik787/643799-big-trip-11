@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {getUnique, getMonthString} from "../utils/utils.js";
+import {getUnique, getMonthString} from "../utils/common.js";
 
 const tripInfoMainTemplate = (events) => {
   let cities = [];

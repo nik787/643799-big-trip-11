@@ -1,4 +1,4 @@
-import {getTimeString, getTimeDurationString} from "../utils/utils.js";
+import {getTimeString, getTimeDurationString} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const availableOffersTemplate = (events) => {

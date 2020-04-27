@@ -1,9 +1,4 @@
-export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  AFTEREND: `afterend`,
-  BEFOREEND: `beforeend`
-};
-
+import {getRandomIntegerNumber} from "./random.js";
 const months = [
   `Jan`,
   `Feb`,
@@ -19,27 +14,7 @@ const months = [
   `Dec`,
 ];
 
-export const getRandomIntegerNumber = (min, max) => {
-  return min + Math.floor(Math.random() * (max - min));
-};
-
-export const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomIntegerNumber(0, array.length);
-
-  return array[randomIndex];
-};
-
-export const getRandomArray = (array) => {
-  const minElement = 1;
-  const newArray = [];
-  const count = getRandomIntegerNumber(minElement, array.length);
-  for (let i = 0; i < count; i++) {
-    newArray.push(array[i]);
-  }
-  return newArray;
-};
-
-export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date()) => {
+export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date(2020, 5, 1)) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
@@ -80,6 +55,7 @@ export const getUnique = (arr) => {
 export const sortEvents = (array) => {
   let newArray = [];
   let dateArray = [];
+  array.sort((a, b) => a.date.start - b.date.start);
   array.forEach((element) => {
     dateArray.push(element.date.start.getDate());
   });
@@ -93,25 +69,4 @@ export const sortEvents = (array) => {
     }
   }
   return newArray;
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-export const render = (container, element, place = RenderPosition.BEFOREEND) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.AFTEREND:
-      container.after(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
 };

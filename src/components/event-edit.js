@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {getDateString, getTimeString} from "../utils/utils.js";
+import {getDateString, getTimeString} from "../utils/common.js";
 import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
 
 const eventPhotosTemplate = (photos) => {
