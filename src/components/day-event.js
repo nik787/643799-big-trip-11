@@ -67,4 +67,9 @@ export default class DayEvent extends AbstractComponent {
   getTemplate() {
     return tripDayEventTemplate(this._event);
   }
+
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
 }

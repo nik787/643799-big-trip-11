@@ -72,17 +72,13 @@ const renderEvent = (component, event) => {
   };
 
   const dayEventComponent = new DayEventComponent(event);
-  const editButton = dayEventComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
+  dayEventComponent.setEditButtonClickHandler(() => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const eventEditComponent = new EventEditComponent(event);
-
-  const editForm = eventEditComponent.getElement().querySelector(`.event--edit`);
-  editForm.addEventListener(`submit`, replaceEditToEvent);
-  editForm.addEventListener(`submit`, (evt) => {
+  eventEditComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);

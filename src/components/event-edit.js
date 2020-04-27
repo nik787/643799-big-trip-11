@@ -151,4 +151,9 @@ export default class EventEdit extends AbstractComponent {
   getTemplate() {
     return tripEventEditTemplate(this._event);
   }
+
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`.event--edit`)
+      .addEventListener(`submit`, handler);
+  }
 }
