@@ -1,4 +1,5 @@
-import {createElement, getUnique, getMonthString} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
+import {getUnique, getMonthString} from "../utils/utils.js";
 
 const tripInfoMainTemplate = (events) => {
   let cities = [];
@@ -25,25 +26,13 @@ const tripInfoMainTemplate = (events) => {
   );
 };
 
-export default class InfoMain {
+export default class InfoMain extends AbstractComponent {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   getTemplate() {
     return tripInfoMainTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

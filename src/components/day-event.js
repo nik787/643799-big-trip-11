@@ -1,4 +1,5 @@
-import {createElement, getTimeString, getTimeDurationString} from "../utils.js";
+import {getTimeString, getTimeDurationString} from "../utils/utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const availableOffersTemplate = (events) => {
   return events.map((event) => {
@@ -57,26 +58,13 @@ const tripDayEventTemplate = (event) => {
   );
 };
 
-export default class DayEvent {
+export default class DayEvent extends AbstractComponent {
   constructor(event) {
+    super();
     this._event = event;
-
-    this._element = null;
   }
 
   getTemplate() {
     return tripDayEventTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

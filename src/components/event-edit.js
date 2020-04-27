@@ -1,4 +1,5 @@
-import {createElement, getDateString, getTimeString} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
+import {getDateString, getTimeString} from "../utils/utils.js";
 import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
 
 const eventPhotosTemplate = (photos) => {
@@ -141,26 +142,13 @@ const tripEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractComponent {
   constructor(event) {
+    super();
     this._event = event;
-
-    this._element = null;
   }
 
   getTemplate() {
     return tripEventEditTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

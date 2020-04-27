@@ -1,5 +1,5 @@
-import {createElement, getMonthString} from "../utils.js";
-
+import {getMonthString} from "../utils/utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const tripDayTemplate = (event, index) => {
   const {date} = event[0];
@@ -21,26 +21,14 @@ const tripDayTemplate = (event, index) => {
   );
 };
 
-export default class Day {
+export default class Day extends AbstractComponent {
   constructor(event, index) {
+    super();
     this._event = event;
     this._index = index;
-    this._element = null;
   }
 
   getTemplate() {
     return tripDayTemplate(this._event, this._index);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

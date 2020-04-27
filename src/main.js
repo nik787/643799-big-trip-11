@@ -10,7 +10,7 @@ import DaysComponent from "./components/days-list.js";
 import DayComponent from "./components/day.js";
 import DayEventComponent from "./components/day-event.js";
 import {generateEvents} from "./mock/event.js";
-import {render, RenderPosition, sortEvents} from "./utils.js";
+import {render, RenderPosition, sortEvents} from "./utils/utils.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
