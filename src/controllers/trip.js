@@ -5,20 +5,8 @@ import DaysComponent from "../components/days-list.js";
 import DayComponent from "../components/day.js";
 import DayEventComponent from "../components/day-event.js";
 import {render, replace} from "../utils/render.js";
+import {sortEvents} from "../utils/common.js";
 
-
-const renderPageMain = (container, evt) => {
-  evt.forEach((eventsList) => {
-    const isAllEventsArchived = eventsList.every((event) => event.isArchive);
-    if (isAllEventsArchived) {
-      render(container, new NoEventsComponent());
-      return;
-    }
-  });
-  render(container, new SortComponent());
-  render(container, new DaysComponent(evt));
-  renderDays(container, evt);
-};
 
 const renderEvent = (component, event) => {
 
@@ -74,9 +62,20 @@ const renderDays = (container, events) => {
 export default class TripController {
   constructor(container) {
     this._container = container;
+    this._noEventComponent = new NoEventsComponent();
+    this._sortComponent = new SortComponent();
+    this._daysComponent = new DaysComponent();
   }
 
   render(events) {
-    renderPageMain(this._container, events);
+    const container = this._container;
+    const sortEvt = sortEvents(events);
+    if (events <= 0) {
+      render(container, this._noEventComponent);
+      return;
+    }
+    render(container, new SortComponent());
+    render(container, new DaysComponent(sortEvt));
+    renderDays(container, sortEvt);
   }
 }

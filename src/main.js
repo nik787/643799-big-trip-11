@@ -7,12 +7,10 @@ import FilterComponent from "./components/main-filter.js";
 
 import {generateEvents} from "./mock/event.js";
 import {render, RenderPosition} from "./utils/render.js";
-import {sortEvents} from "./utils/common.js";
 
-const COUNT_EVENT = 22;
+const COUNT_EVENT = 0;
 const events = generateEvents(COUNT_EVENT);
-
-const sortEvt = sortEvents(events);
+events.sort((a, b) => a.date.start - b.date.start);
 
 const pageBody = document.querySelector(`.page-body`);
 const pageHeader = pageBody.querySelector(`.page-header`);
@@ -36,6 +34,6 @@ const renderPageHeader = (eventList) => {
 
 const tripController = new TripController(tripEvents);
 
-renderPageHeader(sortEvt);
-tripController.render(sortEvt);
+renderPageHeader(events);
+tripController.render(events);
 // renderPageMain(tripEvents(), sortEvt);

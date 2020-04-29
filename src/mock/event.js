@@ -113,8 +113,7 @@ const generateEvent = () => {
       start: dateStart,
       finish: dateFinish
     },
-    price: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX),
-    isArchive: false
+    price: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX)
   };
 };
 
