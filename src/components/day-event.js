@@ -18,12 +18,6 @@ const tripDayEventTemplate = (event) => {
   const _dateStart = date.start;
   const _dateFinish = date.finish;
 
-  events.forEach((element) => {
-    if (element.isChecked) {
-      _price += element.price;
-    }
-  });
-
   return (
     `<li class="trip-events__item">
       <div class="event">

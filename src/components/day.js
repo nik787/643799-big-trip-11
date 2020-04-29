@@ -1,7 +1,7 @@
 import {getMonthString} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
-const tripDayTemplate = (event, index) => {
+const tripDayTemplate = (event, index = ``) => {
   const {date} = event[0];
 
   const day = date.start.getDate();
@@ -11,8 +11,8 @@ const tripDayTemplate = (event, index) => {
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-        <span class="day__counter">${index + 1}</span>
-        <time class="day__date" datetime="${year}-${date.start.getMonth() + 1 < 10 ? `0${date.start.getMonth() + 1}` : date.start.getMonth()}-${day}">${month} ${day}</time>
+        <span class="day__counter">${index !== `` ? `${index + 1}` : ``}</span>
+        <time class="day__date" datetime="${index !== `` ? `${year}-${date.start.getMonth() + 1 < 10 ? `0${date.start.getMonth() + 1}` : date.start.getMonth()}-${day}` : ``}">${index ? `${month} ${day}` : ``}</time>
       </div>
       <ul class="trip-events__list">
 

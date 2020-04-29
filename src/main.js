@@ -8,7 +8,7 @@ import FilterComponent from "./components/main-filter.js";
 import {generateEvents} from "./mock/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const COUNT_EVENT = 0;
+const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
 events.sort((a, b) => a.date.start - b.date.start);
 
@@ -32,8 +32,7 @@ const renderPageHeader = (eventList) => {
   render(tripMainControl, new FilterComponent());
 };
 
-const tripController = new TripController(tripEvents);
+const tripController = new TripController(tripEvents, events);
 
 renderPageHeader(events);
-tripController.render(events);
-// renderPageMain(tripEvents(), sortEvt);
+tripController.render();
