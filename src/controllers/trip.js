@@ -1,9 +1,8 @@
 import SortComponent, {SortType} from "../components/sorting.js";
 import NoEventsComponent from "../components/no-events.js";
-import EventEditComponent from "../components/event-edit.js";
+import PointController from "./point.js";
 import DaysComponent from "../components/days-list.js";
 import DayComponent from "../components/day.js";
-import DayEventComponent from "../components/day-event.js";
 import {render, replace} from "../utils/render.js";
 import {sortEvents} from "../utils/common.js";
 
@@ -26,40 +25,6 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-const renderEvent = (component, event) => {
-
-  const replaceEventToEdit = () => {
-    replace(eventEditComponent, dayEventComponent);
-  };
-
-  const replaceEditToEvent = () => {
-    replace(dayEventComponent, eventEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const dayEventComponent = new DayEventComponent(event);
-  dayEventComponent.setEditButtonClickHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const eventEditComponent = new EventEditComponent(event);
-  eventEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(component, dayEventComponent);
-};
 
 const renderDay = (container, eventsList, index) => {
   const tripDays = container.querySelector(`.trip-days`);
