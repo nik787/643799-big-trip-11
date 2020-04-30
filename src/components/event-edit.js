@@ -1,6 +1,6 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {getDateString, getTimeString} from "../utils/common.js";
-import {typeEventsTranfer, typeEventsActivity, typeEvents} from "../mock/event.js";
+import {typeEventsTranfer, typeEventsActivity} from "../mock/event.js";
 
 const eventPhotosTemplate = (photos) => {
   return photos.map((photo) => {
@@ -42,13 +42,13 @@ const offersTemplate = (offers) => {
   }).join(``);
 };
 
-const eventTypeTemplate = (types) => {
+const eventTypeTemplate = (types, eventType) => {
   return types.map((element) => {
     const _type = element.toLowerCase();
 
     return (
       `<div class="event__type-item">
-        <input id="event-type-${_type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${_type}" ${typeEvents.includes(element) ? `checked` : ``}>
+        <input id="event-type-${_type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${_type}" ${_type === eventType.toLowerCase() ? `checked` : ``}>
         <label class="event__type-label  event__type-label--${_type}" for="event-type-${_type}-1">${element}</label>
       </div>`
     );
@@ -56,14 +56,11 @@ const eventTypeTemplate = (types) => {
 };
 
 const tripEventEditTemplate = (event) => {
-  const {type, cities, events, price, date} = event;
+  const {type, cities, events, price, date, isFavorite} = event;
 
   let _price = price;
   const _dateStart = date.start;
   const _dateFinish = date.finish;
-  events.forEach((element) => {
-    _price += element.price;
-  });
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
@@ -79,13 +76,13 @@ const tripEventEditTemplate = (event) => {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
 
-                ${eventTypeTemplate(typeEventsTranfer)}
+                ${eventTypeTemplate(typeEventsTranfer, type)}
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
 
-                ${eventTypeTemplate(typeEventsActivity)}
+                ${eventTypeTemplate(typeEventsActivity, type)}
               </fieldset>
             </div>
           </div>
@@ -126,7 +123,7 @@ const tripEventEditTemplate = (event) => {
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
 
-          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+          <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -153,14 +150,25 @@ const tripEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit extends AbstractComponent {
+export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
     this._event = event;
+    this._submitHandler = null;
+    // this._subscribeOnEvents();
   }
 
   getTemplate() {
     return tripEventEditTemplate(this._event);
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    // this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
   }
 
   setSubmitHandler(handler) {
@@ -168,8 +176,23 @@ export default class EventEdit extends AbstractComponent {
       .addEventListener(`submit`, handler);
   }
 
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, handler);
+  }
+
   setCloseHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }
+
+  // _subscribeOnEvents() {
+  //   const element = this.getElement();
+
+  //   element.querySelector(`.event__type--input`)
+  //     .addEventListener(`change`, () => {
+
+  //       this.rerender();
+  //     });
+  // }
 }

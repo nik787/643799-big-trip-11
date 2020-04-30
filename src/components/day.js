@@ -3,7 +3,6 @@ import AbstractComponent from "./abstract-component.js";
 
 const tripDayTemplate = (event, index = ``) => {
   const {date} = event[0];
-
   const day = date.start.getDate();
   const month = getMonthString(date.start);
   const year = date.start.getFullYear();
