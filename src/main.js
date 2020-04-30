@@ -32,7 +32,7 @@ const renderPageHeader = (eventList) => {
   render(tripMainControl, new FilterComponent());
 };
 
-const tripController = new TripController(tripEvents, events);
+const tripController = new TripController(tripEvents);
 
 renderPageHeader(events);
-tripController.render();
+tripController.render(events);

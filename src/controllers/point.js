@@ -1,6 +1,6 @@
 import EventComponent from "../components/day-event.js";
 import EventEditComponent from "../components/event-edit.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, replace} from "../utils/render.js";
 
 export default class PointController {
   constructor(container) {
@@ -24,6 +24,10 @@ export default class PointController {
       evt.preventDefault();
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+    this._eventEditComponent.setCloseHandler((evt) => {
+      evt.preventDefault();
+      this._replaceEditToEvent();
     });
 
     render(this._container, this._eventComponent);

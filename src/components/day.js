@@ -12,7 +12,7 @@ const tripDayTemplate = (event, index = ``) => {
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${index !== `` ? `${index + 1}` : ``}</span>
-        <time class="day__date" datetime="${index !== `` ? `${year}-${date.start.getMonth() + 1 < 10 ? `0${date.start.getMonth() + 1}` : date.start.getMonth()}-${day}` : ``}">${index ? `${month} ${day}` : ``}</time>
+        <time class="day__date" datetime="${index !== `` ? `${year}-${date.start.getMonth() + 1 < 10 ? `0${date.start.getMonth() + 1}` : date.start.getMonth()}-${day}` : ``}">${index !== `` ? `${month} ${day}` : ``}</time>
       </div>
       <ul class="trip-events__list">
 

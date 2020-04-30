@@ -3,7 +3,7 @@ import NoEventsComponent from "../components/no-events.js";
 import PointController from "./point.js";
 import DaysComponent from "../components/days-list.js";
 import DayComponent from "../components/day.js";
-import {render, replace} from "../utils/render.js";
+import {render} from "../utils/render.js";
 import {sortEvents} from "../utils/common.js";
 
 const getSortedEvents = (events, sortType) => {
@@ -31,9 +31,13 @@ const renderDay = (container, eventsList, index) => {
   const dayComponent = new DayComponent(eventsList, index);
   render(tripDays, dayComponent);
   const eventList = dayComponent.getElement().querySelector(`.trip-events__list`);
-  for (let i = 0; i < eventsList.length; i++) {
-    renderEvent(eventList, eventsList[i]);
-  }
+  return eventsList.map((event) => {
+    const pointController = new PointController(eventList);
+
+    pointController.render(event);
+
+    return pointController;
+  });
 };
 
 const renderDays = (container, events) => {
@@ -43,21 +47,24 @@ const renderDays = (container, events) => {
 };
 
 export default class TripController {
-  constructor(container, events) {
+  constructor(container) {
     this._container = container;
-    this._events = events;
+    this._events = [];
 
     this._noEventComponent = new NoEventsComponent();
     this._sortComponent = new SortComponent();
     this._daysComponent = new DaysComponent();
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-  render() {
-    const events = this._events;
+  render(events) {
+    this._events = events;
     const container = this._container;
-    const sortEvt = sortEvents(events);
+    const sortEvt = sortEvents(this._events);
 
-    if (events.length < 1) {
+    if (this._events.length < 1) {
       render(container, this._noEventComponent);
       return;
     }
@@ -65,17 +72,18 @@ export default class TripController {
     render(container, this._sortComponent);
     render(container, new DaysComponent(sortEvt));
     renderDays(container, sortEvt);
+  }
 
-    this._sortComponent.setSortTypeChangeHandler((sortType) => {
-      const sortedEvents = getSortedEvents(events, sortType);
-      const daysList = container.querySelector(`.trip-days`);
+  _onSortTypeChange(sortType) {
+    const sortedEvents = getSortedEvents(this._events, sortType);
+    const daysList = this._container.querySelector(`.trip-days`);
+    daysList.innerHTML = ``;
+    renderDay(this._container, sortedEvents);
+    if (sortType === SortType.EVENT) {
       daysList.innerHTML = ``;
-      renderDay(container, sortedEvents);
-      if (sortType === SortType.EVENT) {
-        daysList.innerHTML = ``;
-        render(container, new DaysComponent(sortEvt));
-        renderDays(container, sortEvt);
-      }
-    });
+      const sortEvt = sortEvents(this._events);
+      render(this._container, new DaysComponent(sortEvt));
+      renderDays(this._container, sortEvt);
+    }
   }
 }

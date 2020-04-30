@@ -4,6 +4,11 @@ const tripInfoCostTemplate = (events) => {
   let price = 0;
   events.forEach((event) => {
     price += event.price;
+    event.events.forEach((element) => {
+      if (element.isChecked) {
+        price += element.price;
+      }
+    });
   });
 
   return (
