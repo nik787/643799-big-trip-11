@@ -153,9 +153,11 @@ const tripEventEditTemplate = (event) => {
 export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
+
     this._event = event;
     this._submitHandler = null;
-    // this._subscribeOnEvents();
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -164,7 +166,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    // this._subscribeOnEvents();
+    this._subscribeOnEvents();
   }
 
   rerender() {
@@ -174,11 +176,13 @@ export default class EventEdit extends AbstractSmartComponent {
   setSubmitHandler(handler) {
     this.getElement().querySelector(`.event--edit`)
       .addEventListener(`submit`, handler);
+    this._submitHandler = handler;
   }
 
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
+    this.rerender();
   }
 
   setCloseHandler(handler) {
@@ -186,13 +190,14 @@ export default class EventEdit extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
-  // _subscribeOnEvents() {
-  //   const element = this.getElement();
-
-  //   element.querySelector(`.event__type--input`)
-  //     .addEventListener(`change`, () => {
-
-  //       this.rerender();
-  //     });
-  // }
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const types = element.querySelectorAll(`.event__type-list input`);
+    types.forEach((type) => {
+      type.addEventListener(`click`, (evt) => {
+        this._event.type = evt.target.value;
+        this.rerender();
+      });
+    });
+  }
 }

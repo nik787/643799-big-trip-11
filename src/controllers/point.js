@@ -2,10 +2,17 @@ import EventComponent from "../components/day-event.js";
 import EventEditComponent from "../components/event-edit.js";
 import {render, replace} from "../utils/render.js";
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 export default class PointController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -14,6 +21,8 @@ export default class PointController {
   }
 
   render(event) {
+    const oldEventComponent = this._eventComponent;
+    const oldEventEditComponent = this._eventEditComponent;
     this._eventComponent = new EventComponent(event);
     this._eventEditComponent = new EventEditComponent(event);
 
@@ -29,6 +38,9 @@ export default class PointController {
     });
 
     this._eventEditComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
     });
 
     this._eventEditComponent.setCloseHandler((evt) => {
@@ -36,16 +48,30 @@ export default class PointController {
       this._replaceEditToEvent();
     });
 
-    render(this._container, this._eventComponent);
+    if (oldEventComponent && oldEventEditComponent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventEditComponent, oldEventEditComponent);
+    } else {
+      render(this._container, this._eventComponent);
+    }
+  }
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToEvent();
+    }
   }
 
   _replaceEditToEvent() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._eventEditComponent.reset();
     replace(this._eventComponent, this._eventEditComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _replaceEventToEdit() {
+    this._onViewChange();
     replace(this._eventEditComponent, this._eventComponent);
+    this._mode = Mode.EDIT;
   }
 
   _onEscKeyDown(evt) {
