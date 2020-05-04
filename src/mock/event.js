@@ -1,5 +1,5 @@
 import {getRandomDate, getRandomDuration} from "../utils/common.js";
-import {getRandomIntegerNumber, getRandomArrayItem} from "../utils/random.js";
+import {getRandomIntegerNumber, getRandomArrayItem, getRandomArray} from "../utils/random.js";
 
 const quantityPhotos = {
   MIN: 1,
@@ -21,7 +21,7 @@ const typeEventsTranfer = [
   `Flight`
 ];
 const typeEventsActivity = [
-  `Check-in`,
+  `Check`,
   `Sightseeing`,
   `Restaurant`
 ];
@@ -38,7 +38,7 @@ const cities = [
   `Saint Petersburg`
 ];
 
-const availableOffers = () => [
+const availableOffers = [
   {
     type: `luggage`,
     title: `Add luggage`,
@@ -71,6 +71,19 @@ const availableOffers = () => [
   }
 ];
 
+export const typeEventOffer = {
+  taxi: getRandomArray(availableOffers),
+  bus: getRandomArray(availableOffers),
+  train: getRandomArray(availableOffers),
+  ship: getRandomArray(availableOffers),
+  transport: getRandomArray(availableOffers),
+  drive: getRandomArray(availableOffers),
+  flight: getRandomArray(availableOffers),
+  check: getRandomArray(availableOffers),
+  sightseeing: getRandomArray(availableOffers),
+  restaurant: getRandomArray(availableOffers),
+};
+
 const description = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -92,29 +105,28 @@ const generatePhotos = (count = quantityPhotos.MIN) => {
 
   return photos;
 };
+const getRandomDestination = () => {
+  return {
+    name: getRandomArrayItem(cities),
+    description: getRandomArrayItem(description),
+    pictures: generatePhotos(getRandomIntegerNumber(quantityPhotos.MIN, quantityPhotos.MAX))
+  };
+};
 
-const sortDay = (a, b) => a.date.start.getDate() - b.date.start.getDate();
+const sortDay = (a, b) => a.dateFrom.getDate() - b.dateFrom.getDate();
 
 const generateEvent = () => {
-  const typeEvent = getRandomArrayItem(typeEvents);
-  const citiesEvent = getRandomArrayItem(cities);
-  let titles = typeEventsActivity.includes(typeEvent) ? `${typeEvent} in ${citiesEvent}` : `${typeEvent} to ${citiesEvent}`;
+  const typeName = getRandomArrayItem(typeEvents);
   const dateStart = getRandomDate();
   const dateFinish = getRandomDuration(dateStart);
-
   return {
-    type: typeEvent,
-    cities: citiesEvent,
-    title: titles,
-    events: availableOffers(),
-    description: getRandomArrayItem(description),
-    photos: generatePhotos(getRandomIntegerNumber(quantityPhotos.MIN, quantityPhotos.MAX)),
-    date: {
-      start: dateStart,
-      finish: dateFinish
-    },
-    price: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX),
-    isFavorite: Math.random() > 0.5
+    type: typeName,
+    dateFrom: dateStart,
+    dateTo: dateFinish,
+    destination: getRandomDestination(),
+    basePrice: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX),
+    isFavorite: Math.random() > 0.5,
+    offers: typeEventOffer[typeName.toLowerCase()]
   };
 };
 

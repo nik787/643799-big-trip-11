@@ -34,12 +34,26 @@ export default class PointController {
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToEvent();
+      this._onDataChange(this, event, Object.assign({}, event, {
+        type: event.type[0].toUpperCase() + event.type.slice(1),
+        dateFrom: event.dateFrom,
+        dateTo: event.dateTo,
+        destination: {
+          name: event.destination.name,
+          description: event.destination.description,
+          pictures: event.destination.pictures
+        },
+        basePrice: event.basePrice,
+        isFavorite: event.isFavorite,
+        offers: event.offers
+      }));
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._eventEditComponent.setFavoritesButtonClickHandler(() => {
       this._onDataChange(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
+        type: !event.type
       }));
     });
 

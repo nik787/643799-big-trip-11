@@ -12,10 +12,10 @@ const getSortedEvents = (events, sortType) => {
 
   switch (sortType) {
     case SortType.TIME:
-      sortedEvents = showingEvents.sort((b, a) => (a.date.finish - a.date.start) - (b.date.finish - b.date.start));
+      sortedEvents = showingEvents.sort((b, a) => (a.dateTo - a.dateFrom) - (b.dateTo - b.dateFrom));
       break;
     case SortType.PRICE:
-      sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
+      sortedEvents = showingEvents.sort((a, b) => b.basePrice - a.basePrice);
       break;
     case SortType.EVENT:
       sortedEvents = sortEvents(showingEvents);
@@ -99,13 +99,15 @@ export default class TripController {
         const newEvents = renderEvents(_eventsList, event, this._onDataChange, this._onViewChange);
         this._showedEventControllers = this._showedEventControllers.concat(newEvents);
       });
-    }
-    const _dayComponent = new DayComponent(sortedEvents);
-    const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
-    render(this._daysComponent.getElement(), _dayComponent);
+    } else {
+      const _dayComponent = new DayComponent(sortedEvents);
+      const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
+      render(this._daysComponent.getElement(), _dayComponent);
 
-    const newEvents = renderEvents(_eventsList, sortedEvents, this._onDataChange, this._onViewChange);
-    this._showedEventControllers = newEvents;
+      const newEvents = renderEvents(_eventsList, sortedEvents, this._onDataChange, this._onViewChange);
+      this._showedEventControllers = newEvents;
+    }
+
   }
   _onViewChange() {
     this._showedEventControllers.forEach((it) => {
@@ -113,3 +115,4 @@ export default class TripController {
     });
   }
 }
+

@@ -55,15 +55,15 @@ export const getUnique = (arr) => {
 export const sortEvents = (array) => {
   let newArray = [];
   let dateArray = [];
-  array.sort((a, b) => a.date.start - b.date.start);
+  array.sort((a, b) => a.dateFrom - b.dateFrom);
   array.forEach((element) => {
-    dateArray.push(element.date.start.getDate());
+    dateArray.push(element.dateFrom.getDate());
   });
   dateArray = getUnique(dateArray);
   for (let index = 0; index < dateArray.length; index++) {
     newArray[index] = [];
     for (let j = 0; j < array.length; j++) {
-      if (dateArray[index] === array[j].date.start.getDate()) {
+      if (dateArray[index] === array[j].dateFrom.getDate()) {
         newArray[index].push(array[j]);
       }
     }

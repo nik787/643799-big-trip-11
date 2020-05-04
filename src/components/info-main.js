@@ -7,12 +7,12 @@ const tripInfoMainTemplate = (events) => {
   let days = [];
   let mounth = ``;
   events.forEach((event) => {
-    fullCities.push(event.cities);
-    days.push(event.date.start.getDate());
+    fullCities.push(event.destination.name);
+    days.push(event.dateFrom.getDate());
   });
   cities = getUnique(fullCities);
 
-  mounth = events.length > 0 ? getMonthString(events[0].date.start) : ``;
+  mounth = events.length > 0 ? getMonthString(events[0].dateFrom) : ``;
   let infoDates = events.length > 0 ? `${mounth} ${days[0]}&nbsp;&mdash;&nbsp;${days[days.length - 1]}` : ``;
 
 

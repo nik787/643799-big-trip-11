@@ -3,8 +3,8 @@ import AbstractComponent from "./abstract-component.js";
 const tripInfoCostTemplate = (events) => {
   let price = 0;
   events.forEach((event) => {
-    price += event.price;
-    event.events.forEach((element) => {
+    price += event.basePrice;
+    event.offers.forEach((element) => {
       if (element.isChecked) {
         price += element.price;
       }
