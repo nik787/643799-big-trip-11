@@ -25,7 +25,7 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-const renderEvent = (container, events, onDataChange, onViewChange) => {
+const renderEvents = (container, events, onDataChange, onViewChange) => {
   return events.map((event) => {
     const pointController = new PointController(container, onDataChange, onViewChange);
     pointController.render(event);
@@ -33,25 +33,12 @@ const renderEvent = (container, events, onDataChange, onViewChange) => {
   });
 };
 
-const renderDay = (container, eventsList, index, onDataChange, onViewChange) => {
-  const tripDays = container.querySelector(`.trip-days`);
-  const dayComponent = new DayComponent(eventsList, index);
-
-  render(tripDays, dayComponent);
-  const eventList = dayComponent.getElement().querySelector(`.trip-events__list`);
-  renderEvent(eventList, eventsList, onDataChange, onViewChange);
-};
-
-const renderDays = (container, events, onDataChange, onViewChange) => {
-  events.forEach((eventsList, index) => {
-    renderDay(container, eventsList, index, onDataChange, onViewChange);
-  });
-};
-
 export default class TripController {
   constructor(container) {
     this._container = container;
+
     this._events = [];
+    this._showedEventControllers = [];
 
     this._noEventComponent = new NoEventsComponent();
     this._sortComponent = new SortComponent();
@@ -60,22 +47,33 @@ export default class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   render(events) {
     this._events = events;
     const container = this._container;
-    const sortEvt = sortEvents(this._events);
+
+    let sortEvt = this._events.slice();
+    sortEvt = sortEvents(sortEvt);
+
 
     if (this._events.length < 1) {
       render(container, this._noEventComponent);
       return;
     }
-
     render(container, this._sortComponent);
-    render(container, new DaysComponent());
-    renderDays(container, sortEvt, this._onDataChange, this._onViewChange);
+
+    render(container, this._daysComponent);
+
+    sortEvt.forEach((event, index) => {
+      const _dayComponent = new DayComponent(event, index, true);
+      const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
+      render(this._daysComponent.getElement(), _dayComponent);
+      const newEvents = renderEvents(_eventsList, event, this._onDataChange, this._onViewChange);
+      this._showedEventControllers = this._showedEventControllers.concat(newEvents);
+    });
   }
 
   _onDataChange(pointController, oldData, newData) {
@@ -92,16 +90,25 @@ export default class TripController {
 
   _onSortTypeChange(sortType) {
     const sortedEvents = getSortedEvents(this._events, sortType);
-    const daysList = this._container.querySelector(`.trip-days`);
-    daysList.innerHTML = ``;
+    this._daysComponent.getElement().innerHTML = ``;
     if (sortType === SortType.EVENT) {
-      renderDays(this._container, sortedEvents, this._onDataChange);
-    } else {
-      renderDay(this._container, sortedEvents, ``, this._onDataChange);
+      sortedEvents.forEach((event, index) => {
+        const _dayComponent = new DayComponent(event, index, true);
+        const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
+        render(this._daysComponent.getElement(), _dayComponent);
+        const newEvents = renderEvents(_eventsList, event, this._onDataChange, this._onViewChange);
+        this._showedEventControllers = this._showedEventControllers.concat(newEvents);
+      });
     }
+    const _dayComponent = new DayComponent(sortedEvents);
+    const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
+    render(this._daysComponent.getElement(), _dayComponent);
+
+    const newEvents = renderEvents(_eventsList, sortedEvents, this._onDataChange, this._onViewChange);
+    this._showedEventControllers = newEvents;
   }
   _onViewChange() {
-    this._events.forEach((it) => {
+    this._showedEventControllers.forEach((it) => {
       it.setDefaultView();
     });
   }

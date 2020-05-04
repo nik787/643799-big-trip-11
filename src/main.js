@@ -4,6 +4,8 @@ import InfoMainComponent from "./components/info-main.js";
 import CostComponent from "./components/info-cost.js";
 import NavigationComponent from "./components/main-nav.js";
 import FilterComponent from "./components/main-filter.js";
+import DaysComponent from "./components/days-list.js";
+
 
 import {generateEvents} from "./mock/event.js";
 import {render, RenderPosition} from "./utils/render.js";
@@ -32,7 +34,8 @@ const renderPageHeader = (eventList) => {
   render(tripMainControl, new FilterComponent());
 };
 
-const tripController = new TripController(tripEvents);
 
 renderPageHeader(events);
+const tripController = new TripController(tripEvents);
+
 tripController.render(events);
