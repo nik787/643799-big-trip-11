@@ -173,6 +173,12 @@ export default class EventEdit extends AbstractSmartComponent {
     super.rerender();
   }
 
+  reset() {
+    const event = this._event;
+
+    this.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().querySelector(`.event--edit`)
       .addEventListener(`submit`, handler);

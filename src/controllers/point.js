@@ -55,6 +55,7 @@ export default class PointController {
       render(this._container, this._eventComponent);
     }
   }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
@@ -62,8 +63,8 @@ export default class PointController {
   }
 
   _replaceEditToEvent() {
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._eventEditComponent.reset();
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
     replace(this._eventComponent, this._eventEditComponent);
     this._mode = Mode.DEFAULT;
   }

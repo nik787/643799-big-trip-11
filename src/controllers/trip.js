@@ -29,7 +29,6 @@ const renderEvent = (container, events, onDataChange, onViewChange) => {
   return events.map((event) => {
     const pointController = new PointController(container, onDataChange, onViewChange);
     pointController.render(event);
-
     return pointController;
   });
 };
@@ -76,7 +75,7 @@ export default class TripController {
 
     render(container, this._sortComponent);
     render(container, new DaysComponent());
-    renderDays(container, sortEvt, this._onDataChange);
+    renderDays(container, sortEvt, this._onDataChange, this._onViewChange);
   }
 
   _onDataChange(pointController, oldData, newData) {
@@ -102,6 +101,8 @@ export default class TripController {
     }
   }
   _onViewChange() {
-    this._events.forEach((it) => it.setDefaultView());
+    this._events.forEach((it) => {
+      it.setDefaultView();
+    });
   }
 }
