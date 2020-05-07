@@ -167,6 +167,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._event = event;
     this._submitHandler = null;
+    this._setCloseHandler = null;
 
     this._subscribeOnEvents();
   }
@@ -177,6 +178,7 @@ export default class EventEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setCloseHandler(this._setCloseHandler);
     this._subscribeOnEvents();
   }
 
@@ -185,7 +187,9 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   reset() {
+    const event = this._event;
 
+    this.rerender();
   }
 
   setSubmitHandler(handler) {
@@ -203,6 +207,7 @@ export default class EventEdit extends AbstractSmartComponent {
   setCloseHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
+    this._setCloseHandler = handler;
   }
 
   _subscribeOnEvents() {
@@ -219,10 +224,12 @@ export default class EventEdit extends AbstractSmartComponent {
 
         this.rerender();
       });
+
     });
     const price = element.querySelector(`.event__input--price`);
-    price.addEventListener(`input`, (evt) => {
+    price.addEventListener(`change`, (evt) => {
       this._event.basePrice = evt.target.value;
+      this.rerender();
     });
   }
 }
