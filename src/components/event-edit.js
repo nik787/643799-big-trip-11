@@ -64,13 +64,15 @@ const eventTypeTemplate = (types, eventType) => {
   }).join(``);
 };
 
-const tripEventEditTemplate = (event) => {
-  const {type, dateFrom, dateTo, destination, basePrice, isFavorite, offers} = event;
-  let types = type;
+const tripEventEditTemplate = (event, options = {}) => {
+  const {basePrice, dateFrom, dateTo, isFavorite} = event;
+  const {type, destination, offers} = options;
+
+  let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
     types = `Check-in`;
   } else {
-    types = type;
+    types = type[0].toUpperCase() + type.slice(1);
   }
 
   return (
@@ -88,19 +90,19 @@ const tripEventEditTemplate = (event) => {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
 
-                ${eventTypeTemplate(typeEventsTranfer, type)}
+                ${eventTypeTemplate(typeEventsTranfer, types)}
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
-                ${eventTypeTemplate(typeEventsActivity, type)}
+                ${eventTypeTemplate(typeEventsActivity, types)}
               </fieldset>
             </div>
           </div>
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${type === `Check` ? `Check-in` : type[0].toUpperCase() + type.slice(1)} ${typeEventsActivity.includes(type[0].toUpperCase() + type.slice(1)) ? `in` : `to`}
+              ${types === `Check` ? `Check-in` : types[0].toUpperCase() + types.slice(1)} ${typeEventsActivity.includes(types[0].toUpperCase() + types.slice(1)) ? `in` : `to`}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -166,20 +168,29 @@ export default class EventEdit extends AbstractSmartComponent {
     super();
 
     this._event = event;
+
     this._submitHandler = null;
-    this._setCloseHandler = null;
+    this._resetHandler = null;
+    this._favoriteCheckboxClickHandler = null;
+    this._editButtonClickHandler = null;
 
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return tripEventEditTemplate(this._event);
-  }
-
-  recoveryListeners() {
-    this.setSubmitHandler(this._submitHandler);
-    this.setCloseHandler(this._setCloseHandler);
-    this._subscribeOnEvents();
+    return tripEventEditTemplate(this._event, {
+      type: this._event.type,
+      dateFrom: this._event.dateFrom,
+      dateTo: this._event.dateTo,
+      destination: {
+        name: this._event.destination.name,
+        description: this._event.destination.description,
+        pictures: this._event.destination.pictures
+      },
+      basePrice: this._event.basePrice,
+      isFavorite: this._event.isFavorite,
+      offers: this._event.offers
+    });
   }
 
   rerender() {
@@ -189,31 +200,46 @@ export default class EventEdit extends AbstractSmartComponent {
   reset() {
     const event = this._event;
 
+    this._event = event;
+
     this.rerender();
   }
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`.event--edit`)
-      .addEventListener(`submit`, handler);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
     this._submitHandler = handler;
   }
 
-  setFavoritesButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`)
+  setFavoriteCheckboxClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`click`, handler);
-    this.rerender();
+    this._favoriteCheckboxClickHandler = handler;
   }
 
-  setCloseHandler(handler) {
+  setResetHandler(handler) {
+    this.getElement().addEventListener(`reset`, handler);
+    this._resetHandler = handler;
+  }
+
+  setEditButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
-    this._setCloseHandler = handler;
+    this._editButtonClickHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setResetHandler(this._resetHandler);
+    this.setFavoriteCheckboxClickHandler(this._favoriteCheckboxClickHandler);
+    this.setEditButtonClickHandler(this._editButtonClickHandler);
+
+    this._subscribeOnEvents();
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
-    const types = element.querySelectorAll(`.event__type-list input`);
-    types.forEach((type) => {
+
+    element.querySelectorAll(`.event__type-list input`).forEach((type) => {
       type.addEventListener(`click`, (evt) => {
         if (evt.target.value === `check-in`) {
           this._event.type = `Check`;
@@ -226,10 +252,11 @@ export default class EventEdit extends AbstractSmartComponent {
       });
 
     });
-    const price = element.querySelector(`.event__input--price`);
-    price.addEventListener(`change`, (evt) => {
-      this._event.basePrice = evt.target.value;
-      this.rerender();
-    });
+
+    element.querySelector(`.event__input--price`)
+      .addEventListener(`change`, (evt) => {
+        this._event.basePrice = evt.target.value;
+        this.rerender();
+      });
   }
 }

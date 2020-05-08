@@ -35,29 +35,25 @@ export default class PointController {
       evt.preventDefault();
       this._replaceEditToEvent();
       this._onDataChange(this, event, Object.assign({}, event, {
-        type: event.type[0].toUpperCase() + event.type.slice(1),
-        dateFrom: event.dateFrom,
-        dateTo: event.dateTo,
-        destination: {
-          name: event.destination.name,
-          description: event.destination.description,
-          pictures: event.destination.pictures
-        },
-        basePrice: event.basePrice,
-        isFavorite: event.isFavorite,
-        offers: event.offers
+        type: event.type[0].toUpperCase() + event.type.slice(1)
       }));
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-        type: !event.type
-      }));
+    this._eventEditComponent.setResetHandler(() => {
+      this._eventEditComponent.reset();
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setCloseHandler((evt) => {
+    this._eventEditComponent.setFavoriteCheckboxClickHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite
+      }));
+      this._eventEditComponent.rerender();
+    });
+
+    this._eventEditComponent.setEditButtonClickHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToEvent();
     });

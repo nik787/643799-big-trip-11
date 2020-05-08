@@ -20,9 +20,9 @@ const tripDayEventTemplate = (event) => {
   if (types === `Check`) {
     types = `Check-in`;
   } else {
-    types = type;
+    types = type[0].toUpperCase() + type.slice(1);
   }
-  const title = typeEventsActivity.includes(type) ? `${types} in ${destination.name}` : `${types} to ${destination.name}`;
+  const title = typeEventsActivity.includes(types) ? `${types} in ${destination.name}` : `${types} to ${destination.name}`;
   return (
     `<li class="trip-events__item">
       <div class="event">
