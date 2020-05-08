@@ -9,8 +9,8 @@ export const formatTime = (date) => {
   return moment(date).format(`hh:mm`);
 };
 
-export const formatDate = (date) => {
-  return moment(date).format(`DD/MM/YY`);
+export const formatDate = (date, format = `-`) => {
+  return moment(date).format(`YYYY${format}MM${format}DD`);
 };
 
 export const getRandomDuration = (date) => {

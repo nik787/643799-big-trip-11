@@ -1,4 +1,4 @@
-import {getTimeString, getTimeDurationString} from "../utils/common.js";
+import {getDateString, getTimeString, getTimeDurationString} from "../utils/common.js";
 import {typeEventsActivity} from "../mock/event.js";
 import AbstractComponent from "./abstract-component.js";
 
@@ -33,9 +33,9 @@ const tripDayEventTemplate = (event) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${getTimeString(dateFrom)}</time>
+            <time class="event__start-time" datetime="${getDateString(dateFrom)}T${getTimeString(dateFrom)}">${getTimeString(dateFrom)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${getTimeString(dateTo)}</time>
+            <time class="event__end-time" datetime="${getDateString(dateTo)}T${getTimeString(dateTo)}">${getTimeString(dateTo)}</time>
           </p>
           <p class="event__duration">${getTimeDurationString(dateFrom, dateTo)}</p>
         </div>
