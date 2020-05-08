@@ -1,6 +1,7 @@
 import {getRandomIntegerNumber} from "./random.js";
 import moment from "moment";
-
+import * as momentDurationFormatSetup from "moment-duration-format";
+momentDurationFormatSetup(moment);
 export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date(2020, 5, 1)) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
@@ -30,26 +31,11 @@ export const getMonthString = (date) => {
 };
 
 export const getTimeDurationString = (timeStart, timeFinish) => {
-  let b = moment(timeStart);
-  let a = moment(timeFinish);
+  const start = moment(timeStart);
+  const end = moment(timeFinish);
+  const duration = moment.duration(end.diff(start)).format(`DD[D]HH[H]mm[M]`);
 
-  let years = a.diff(b, `year`);
-  b.add(years, `years`);
-
-  let month = a.diff(b, `month`);
-  b.add(month, `month`);
-
-  let days = a.diff(b, `days`);
-  b.add(days, `days`);
-
-  let hours = a.diff(b, `hours`);
-  b.add(hours, `hours`);
-
-  let minutes = a.diff(b, `minutes`);
-  b.add(minutes, `minutes`);
-
-  let str = `${years ? `${years}Y` : ``} ${month ? `${month}MM` : ``} ${days ? `${days}D` : ``} ${hours ? `${hours}H` : ``} ${minutes ? `${minutes}M` : ``}`;
-  return str;
+  return duration;
 };
 
 export const getUnique = (arr) => {
