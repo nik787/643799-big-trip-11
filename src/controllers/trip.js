@@ -78,6 +78,9 @@ export default class TripController {
 
   _onDataChange(pointController, oldData, newData) {
     const index = this._events.findIndex((it) => it === oldData);
+    console.log(oldData);
+    console.log(newData);
+
 
     if (index === -1) {
       return;

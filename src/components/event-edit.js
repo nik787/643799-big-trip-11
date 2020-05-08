@@ -167,6 +167,7 @@ export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
 
+    this._originalEvent = event;
     this._event = event;
 
     this._submitHandler = null;
@@ -178,7 +179,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return tripEventEditTemplate(this._event, {
+    return tripEventEditTemplate(this._originalEvent, {
       type: this._event.type,
       dateFrom: this._event.dateFrom,
       dateTo: this._event.dateTo,
@@ -198,9 +199,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   reset() {
-    const event = this._event;
-
-    this._event = event;
+    this._event = Object.assign({}, this._originalEvent);
 
     this.rerender();
   }
