@@ -126,7 +126,6 @@ const generateEvent = () => {
   const typeName = getRandomArrayItem(typeEvents);
   const dateStart = getRandomDate();
   const dateFinish = getRandomDuration(dateStart);
-  console.log(typeEventOffer[typeName.toLowerCase()]);
 
   return {
     type: typeName,
