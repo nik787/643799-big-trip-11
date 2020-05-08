@@ -1,19 +1,5 @@
 import {getRandomIntegerNumber} from "./random.js";
 import moment from "moment";
-const months = [
-  `Jan`,
-  `Feb`,
-  `Mar`,
-  `Apr`,
-  `May`,
-  `June`,
-  `July`,
-  `Aug`,
-  `Sept`,
-  `Oct`,
-  `Nov`,
-  `Dec`,
-];
 
 export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date(2020, 5, 1)) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
