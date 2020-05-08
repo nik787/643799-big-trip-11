@@ -43,33 +43,40 @@ const availableOffers = [
     type: `luggage`,
     title: `Add luggage`,
     price: 30,
-    isChecked: Math.random() > 0.5
+    isChecked: false
   },
   {
     type: `comfort`,
     title: `Switch to comfort class`,
     price: 100,
-    isChecked: Math.random() > 0.5
+    isChecked: false
   },
   {
     type: `meal`,
     title: `Add meal`,
     price: 15,
-    isChecked: Math.random() > 0.5
+    isChecked: false
   },
   {
     type: `seats`,
     title: `Choose seats`,
     price: 5,
-    isChecked: Math.random() > 0.5
+    isChecked: false
   },
   {
     type: `train`,
     title: `Travel by train`,
     price: 40,
-    isChecked: Math.random() > 0.5
+    isChecked: false
   }
 ];
+
+const getRandomOffersIsChecked = (offers) => {
+  offers.forEach((offer) => {
+    offer.isChecked = Math.random() > 0.5;
+  });
+  return offers;
+};
 
 export const typeEventOffer = {
   taxi: getRandomArray(availableOffers),
@@ -119,6 +126,8 @@ const generateEvent = () => {
   const typeName = getRandomArrayItem(typeEvents);
   const dateStart = getRandomDate();
   const dateFinish = getRandomDuration(dateStart);
+  console.log(typeEventOffer[typeName.toLowerCase()]);
+
   return {
     type: typeName,
     dateFrom: dateStart,
@@ -126,8 +135,9 @@ const generateEvent = () => {
     destination: getRandomDestination(),
     basePrice: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX),
     isFavorite: Math.random() > 0.5,
-    offers: typeEventOffer[typeName.toLowerCase()]
+    offers: getRandomOffersIsChecked(typeEventOffer[typeName.toLowerCase()])
   };
+
 };
 
 const generateEvents = (count) => {

@@ -6,7 +6,7 @@ export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date(2020,
 };
 
 export const formatTime = (date) => {
-  return moment(date).format(`hh:mm`);
+  return moment(date).format(`HH:mm`);
 };
 
 export const formatDate = (date, format = `-`) => {
