@@ -18,7 +18,7 @@ const tripDayEventTemplate = (event) => {
 
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
-    types = `Check-in`;
+    types = `Check`;
   } else {
     types = type[0].toUpperCase() + type.slice(1);
   }
@@ -27,7 +27,7 @@ const tripDayEventTemplate = (event) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${types}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${types === `Check` ? `check-in` : types}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${title}</h3>
 

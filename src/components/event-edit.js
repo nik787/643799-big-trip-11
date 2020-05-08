@@ -64,13 +64,13 @@ const eventTypeTemplate = (types, eventType) => {
   }).join(``);
 };
 
-const tripEventEditTemplate = (event, options = {}) => {
-  const {basePrice, dateFrom, dateTo, isFavorite} = event;
-  const {type, destination, offers} = options;
+const tripEventEditTemplate = (event) => {
+  const {type, destination, offers, basePrice, dateFrom, dateTo, isFavorite} = event;
+  // const {} = options;
 
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
-    types = `Check-in`;
+    types = `Check`;
   } else {
     types = type[0].toUpperCase() + type.slice(1);
   }
@@ -82,7 +82,7 @@ const tripEventEditTemplate = (event, options = {}) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${types.toLowerCase()}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${types.toLowerCase() === `check` ? `check-in` : types.toLowerCase()}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -168,7 +168,7 @@ export default class EventEdit extends AbstractSmartComponent {
     super();
 
     this._originalEvent = event;
-    this._event = event;
+    this._event = Object.assign({}, event);
 
     this._submitHandler = null;
     this._resetHandler = null;
@@ -179,19 +179,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return tripEventEditTemplate(this._originalEvent, {
-      type: this._event.type,
-      dateFrom: this._event.dateFrom,
-      dateTo: this._event.dateTo,
-      destination: {
-        name: this._event.destination.name,
-        description: this._event.destination.description,
-        pictures: this._event.destination.pictures
-      },
-      basePrice: this._event.basePrice,
-      isFavorite: this._event.isFavorite,
-      offers: this._event.offers
-    });
+    return tripEventEditTemplate(this._event);
   }
 
   rerender() {
@@ -241,7 +229,7 @@ export default class EventEdit extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-list input`).forEach((type) => {
       type.addEventListener(`click`, (evt) => {
         if (evt.target.value === `check-in`) {
-          this._event.type = `Check`;
+          this._originalEvent.type = `Check`;
         } else {
           this._event.type = evt.target.value;
         }
