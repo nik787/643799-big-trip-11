@@ -1,4 +1,5 @@
 import {getRandomIntegerNumber} from "./random.js";
+import moment from "moment";
 const months = [
   `Jan`,
   `Feb`,
@@ -18,26 +19,51 @@ export const getRandomDate = (start = new Date(2020, 4, 1), end = new Date(2020,
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-export const getRandomDuration = (date) => {
-  return new Date(date.getTime() + getRandomIntegerNumber(600, 3000000));
+export const formatTime = (date) => {
+  return moment(date).format(`hh:mm`);
 };
 
-export const getDateString = (date, symbol = `/`) => {
-  return `${date.getDate()}${symbol}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`}${symbol}${date.getFullYear().toString().slice(-2)}`;
+export const formatDate = (date) => {
+  return moment(date).format(`DD/MM/YY`);
+};
+
+export const getRandomDuration = (date) => {
+  return new Date(date.getTime() + getRandomIntegerNumber(600, 86000000));
+};
+
+export const getDateString = (date) => {
+  return formatDate(date);
 };
 
 export const getTimeString = (date) => {
-  return `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`;
+  return formatTime(date);
 };
 
 export const getMonthString = (date) => {
-  return months[date.getMonth()];
+  return moment(date).format(`MMMM`);
 };
 
 export const getTimeDurationString = (timeStart, timeFinish) => {
-  const duration = timeFinish.getTime() - timeStart.getTime();
-  const durationMinutes = Math.floor(duration / 60000);
-  return `${durationMinutes}М`;
+  let b = moment(timeStart);
+  let a = moment(timeFinish);
+
+  let years = a.diff(b, `year`);
+  b.add(years, `years`);
+
+  let month = a.diff(b, `month`);
+  b.add(month, `month`);
+
+  let days = a.diff(b, `days`);
+  b.add(days, `days`);
+
+  let hours = a.diff(b, `hours`);
+  b.add(hours, `hours`);
+
+  let minutes = a.diff(b, `minutes`);
+  b.add(minutes, `minutes`);
+
+  let str = `${years ? `${years}Y` : ``} ${month ? `${month}MM` : ``} ${days ? `${days}D` : ``} ${hours ? `${hours}H` : ``} ${minutes ? `${minutes}M` : ``}`;
+  return str;
 };
 
 export const getUnique = (arr) => {

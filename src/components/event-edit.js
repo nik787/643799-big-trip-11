@@ -1,3 +1,6 @@
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {getDateString, getTimeString} from "../utils/common.js";
 import {typeEventsTranfer, typeEventsActivity, typeEventOffer} from "../mock/event.js";
@@ -169,11 +172,13 @@ export default class EventEdit extends AbstractSmartComponent {
     this._originalEvent = event;
     this._event = Object.assign({}, event);
 
+    this._flatpickr = null;
     this._submitHandler = null;
     this._resetHandler = null;
     this._favoriteCheckboxClickHandler = null;
     this._editButtonClickHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -183,6 +188,8 @@ export default class EventEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+
+    this._applyFlatpickr();
   }
 
   reset() {
@@ -190,6 +197,35 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this.rerender();
   }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
+      // Что бы их удалять, нужно вызывать метод `destroy` у созданного инстанса `flatpickr`.
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+    const dateElementStart = this.getElement().querySelector(`#event-start-time-1`);
+    const dateElementFinish = this.getElement().querySelector(`#event-end-time-1`);
+
+    this._flatpickr = flatpickr(dateElementStart, {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d-m-y`,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.dateFrom || `today`,
+    });
+    this._flatpickr = flatpickr(dateElementFinish, {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d-m-y`,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.dateTo || `today`,
+    });
+  }
+
 
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
