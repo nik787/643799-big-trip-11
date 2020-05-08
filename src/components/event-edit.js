@@ -64,9 +64,9 @@ const eventTypeTemplate = (types, eventType) => {
   }).join(``);
 };
 
-const tripEventEditTemplate = (event) => {
-  const {type, destination, offers, basePrice, dateFrom, dateTo, isFavorite} = event;
-  // const {} = options;
+const tripEventEditTemplate = (event, options = {}) => {
+  const {basePrice, dateFrom, dateTo, isFavorite} = event;
+  const {type, destination, offers} = options;
 
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
@@ -179,7 +179,19 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return tripEventEditTemplate(this._event);
+    return tripEventEditTemplate(this._event, {
+      type: this._event.type,
+      dateFrom: this._event.dateFrom,
+      dateTo: this._event.dateTo,
+      destination: {
+        name: this._event.destination.name,
+        description: this._event.destination.description,
+        pictures: this._event.destination.pictures
+      },
+      basePrice: this._event.basePrice,
+      isFavorite: this._event.isFavorite,
+      offers: this._event.offers
+    });
   }
 
   rerender() {
@@ -229,7 +241,7 @@ export default class EventEdit extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-list input`).forEach((type) => {
       type.addEventListener(`click`, (evt) => {
         if (evt.target.value === `check-in`) {
-          this._originalEvent.type = `Check`;
+          this._event.type = `Check`;
         } else {
           this._event.type = evt.target.value;
         }
