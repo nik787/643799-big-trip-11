@@ -64,9 +64,8 @@ const eventTypeTemplate = (types, eventType) => {
   }).join(``);
 };
 
-const tripEventEditTemplate = (event, options = {}) => {
-  const {basePrice, dateFrom, dateTo, isFavorite} = event;
-  const {type, destination, offers} = options;
+const tripEventEditTemplate = (event) => {
+  const {type, destination, offers, basePrice, dateFrom, dateTo, isFavorite} = event;
 
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
@@ -179,19 +178,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return tripEventEditTemplate(this._event, {
-      type: this._event.type,
-      dateFrom: this._event.dateFrom,
-      dateTo: this._event.dateTo,
-      destination: {
-        name: this._event.destination.name,
-        description: this._event.destination.description,
-        pictures: this._event.destination.pictures
-      },
-      basePrice: this._event.basePrice,
-      isFavorite: this._event.isFavorite,
-      offers: this._event.offers
-    });
+    return tripEventEditTemplate(this._event);
   }
 
   rerender() {
