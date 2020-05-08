@@ -32,11 +32,8 @@ export default class PointController {
     });
 
     this._eventEditComponent.setSubmitHandler((evt) => {
-      evt.preventDefault();
       this._replaceEditToEvent();
-      this._onDataChange(this, event, Object.assign({}, event, {
-        type: event.type[0].toUpperCase() + event.type.slice(1)
-      }));
+      this._onDataChange(this, event, evt);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 

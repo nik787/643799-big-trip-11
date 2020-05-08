@@ -192,7 +192,15 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+
+      const formData = new FormData(evt.target);
+
+      handler(Object.assign({}, this._event, {
+        type: formData.get(`event-type`)
+      }));
+    });
     this._submitHandler = handler;
   }
 
