@@ -4,6 +4,7 @@ import InfoMainComponent from "./components/info-main.js";
 import CostComponent from "./components/info-cost.js";
 import NavigationComponent from "./components/main-nav.js";
 import FilterComponent from "./components/main-filter.js";
+import PointsModel from "./models/points.js";
 
 
 import {generateEvents} from "./mock/event.js";
@@ -11,6 +12,8 @@ import {render, RenderPosition} from "./utils/render.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
+const eventsModel = new PointsModel();
+eventsModel.setEvents(events);
 
 const pageBody = document.querySelector(`.page-body`);
 const pageHeader = pageBody.querySelector(`.page-header`);
@@ -34,6 +37,6 @@ const renderPageHeader = (eventList) => {
 
 
 renderPageHeader(events);
-const tripController = new TripController(tripEvents);
+const tripController = new TripController(tripEvents, eventsModel);
 
 tripController.render(events);

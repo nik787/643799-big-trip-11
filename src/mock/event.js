@@ -121,6 +121,7 @@ const generateEvent = () => {
   const dateFinish = getRandomDuration(dateStart);
 
   return {
+    id: String(new Date() + Math.random()),
     type: typeName,
     dateFrom: dateStart,
     dateTo: dateFinish,
