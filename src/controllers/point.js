@@ -1,6 +1,6 @@
 import EventComponent from "../components/day-event.js";
 import EventEditComponent from "../components/event-edit.js";
-import {render, replace} from "../utils/render.js";
+import {render, replace, remove} from "../utils/render.js";
 
 const Mode = {
   DEFAULT: `default`,
@@ -89,6 +89,12 @@ export default class PointController {
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
+  }
+
+  destroy() {
+    remove(this._eventEditComponent);
+    remove(this._eventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 }
 

@@ -68,3 +68,11 @@ export const sortEvents = (array) => {
   }
   return newArray;
 };
+
+export const isFuture = (date) => {
+  return date > new Date();
+};
+
+export const isPast = (date) => {
+  return date < new Date();
+};

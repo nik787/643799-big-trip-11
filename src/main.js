@@ -3,7 +3,7 @@ import InfoContainerComponent from "./components/info-container.js";
 import InfoMainComponent from "./components/info-main.js";
 import CostComponent from "./components/info-cost.js";
 import NavigationComponent from "./components/main-nav.js";
-import FilterComponent from "./components/main-filter.js";
+import FilterController from "./controllers/filters.js";
 import PointsModel from "./models/points.js";
 
 
@@ -12,6 +12,7 @@ import {render, RenderPosition} from "./utils/render.js";
 
 const COUNT_EVENT = 22;
 const events = generateEvents(COUNT_EVENT);
+
 const eventsModel = new PointsModel();
 eventsModel.setEvents(events);
 
@@ -32,11 +33,12 @@ const renderPageHeader = (eventList) => {
   const tripMainControl = pageHeaderTripMain.querySelector(`.trip-main__trip-controls`);
 
   render(tripMainControl, new NavigationComponent(), RenderPosition.AFTERBEGIN);
-  render(tripMainControl, new FilterComponent());
+  const filterController = new FilterController(tripMainControl, eventsModel);
+  filterController.render();
 };
 
 
 renderPageHeader(events);
 const tripController = new TripController(tripEvents, eventsModel);
 
-tripController.render(events);
+tripController.render();

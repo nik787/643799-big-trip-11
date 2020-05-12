@@ -47,8 +47,10 @@ export default class TripController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -68,12 +70,16 @@ export default class TripController {
     render(container, this._daysComponent);
 
     sortEvt.forEach((event, index) => {
-      const _dayComponent = new DayComponent(event, index, true);
-      const _eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
-      render(this._daysComponent.getElement(), _dayComponent);
-      const newEvents = renderEvents(_eventsList, event, this._onDataChange, this._onViewChange);
-      this._showedEventControllers = this._showedEventControllers.concat(newEvents);
+      this._renderEvents(event, index);
     });
+  }
+
+  _renderEvents(event, index) {
+    const _dayComponent = new DayComponent(event, index, true);
+    const eventsList = _dayComponent.getElement().querySelector(`.trip-events__list`);
+    render(this._daysComponent.getElement(), _dayComponent);
+    const newEvents = renderEvents(eventsList, event, this._onDataChange, this._onViewChange);
+    this._showedEventControllers = this._showedEventControllers.concat(newEvents);
   }
 
   _onDataChange(pointController, oldData, newData) {
@@ -82,6 +88,21 @@ export default class TripController {
     if (isSuccess) {
       pointController.render(newData);
     }
+  }
+
+  _removeEvents() {
+    this._showedEventControllers.forEach((eventController) => eventController.destroy());
+    this._showedEventControllers = [];
+    this._daysComponent.getElement().innerHTML = ``;
+  }
+
+  _updateEvents() {
+    const sortEvt = sortEvents(this._eventsModel.getEvents());
+    this._removeEvents();
+
+    sortEvt.forEach((event, index) => {
+      this._renderEvents(event, index);
+    });
   }
 
   _onSortTypeChange(sortType) {
@@ -109,6 +130,10 @@ export default class TripController {
     this._showedEventControllers.forEach((it) => {
       it.setDefaultView();
     });
+  }
+
+  _onFilterChange() {
+    this._updateEvents();
   }
 }
 
