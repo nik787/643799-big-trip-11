@@ -105,13 +105,23 @@ const generatePhotos = (count = quantityPhotos.MIN) => {
 
   return photos;
 };
-const getRandomDestination = () => {
+const getRandomDestination = (city) => {
   return {
-    name: getRandomArrayItem(cities),
+    name: city,
     description: getRandomArrayItem(description),
     pictures: generatePhotos(getRandomIntegerNumber(quantityPhotos.MIN, quantityPhotos.MAX))
   };
 };
+
+const getCities = (array) => {
+  let newArray = [];
+  array.forEach((element) => {
+    newArray = newArray.concat(getRandomDestination(element));
+  });
+  return newArray;
+};
+
+export const destinationList = getCities(cities);
 
 const sortDay = (a, b) => a.dateFrom.getDate() - b.dateFrom.getDate();
 
@@ -125,7 +135,7 @@ const generateEvent = () => {
     type: typeName,
     dateFrom: dateStart,
     dateTo: dateFinish,
-    destination: getRandomDestination(),
+    destination: getRandomArrayItem(destinationList),
     basePrice: getRandomIntegerNumber(costEvent.MIN, costEvent.MAX),
     isFavorite: Math.random() > 0.5,
     offers: typeEventOffer[typeName.toLowerCase()]

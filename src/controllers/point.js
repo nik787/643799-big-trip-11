@@ -2,10 +2,12 @@ import EventComponent from "../components/day-event.js";
 import EventEditComponent from "../components/event-edit.js";
 import {render, replace, remove} from "../utils/render.js";
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
+
+export const EmptyEvent = {};
 
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
@@ -20,11 +22,12 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event) {
+  render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._eventComponent = new EventComponent(event);
     this._eventEditComponent = new EventEditComponent(event);
+    this._mode = mode;
 
     this._eventComponent.setEditButtonClickHandler(() => {
       this._replaceEventToEdit();
@@ -32,16 +35,13 @@ export default class PointController {
     });
 
     this._eventEditComponent.setSubmitHandler((evt) => {
-      this._replaceEditToEvent();
-      this._onDataChange(this, event, evt);
+      evt.preventDefault();
+      const data = this._eventEditComponent.getData();
+      this._onDataChange(this, event, data);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setResetHandler(() => {
-      this._eventEditComponent.reset();
-      this._replaceEditToEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-    });
+    this._eventEditComponent.setResetHandler(() => this._onDataChange(this, event, null));
 
     this._eventEditComponent.setFavoriteCheckboxClickHandler(() => {
       this._onDataChange(this, event, Object.assign({}, event, {
@@ -58,6 +58,7 @@ export default class PointController {
     if (oldEventComponent && oldEventEditComponent) {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
+      this._replaceEditToEvent();
     } else {
       render(this._container, this._eventComponent);
     }
@@ -72,7 +73,9 @@ export default class PointController {
   _replaceEditToEvent() {
     this._eventEditComponent.reset();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    replace(this._eventComponent, this._eventEditComponent);
+    if (document.contains(this._eventEditComponent.getElement())) {
+      replace(this._eventComponent, this._eventEditComponent);
+    }
     this._mode = Mode.DEFAULT;
   }
 

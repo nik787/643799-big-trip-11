@@ -1,5 +1,5 @@
 import {getDateString, getTimeString, getTimeDurationString} from "../utils/common.js";
-import {typeEventsActivity} from "../mock/event.js";
+import {typeEventsActivity, typeEventOffer} from "../mock/event.js";
 import AbstractComponent from "./abstract-component.js";
 
 const availableOffersTemplate = (offers) => {
@@ -16,6 +16,7 @@ const availableOffersTemplate = (offers) => {
 const tripDayEventTemplate = (event) => {
   const {type, dateFrom, dateTo, destination, basePrice, offers} = event;
 
+  // const offers = typeEventOffer[type.toLowerCase()];
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
     types = `Check`;

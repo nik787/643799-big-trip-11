@@ -1,6 +1,6 @@
 import SortComponent, {SortType} from "../components/sorting.js";
 import NoEventsComponent from "../components/no-events.js";
-import PointController from "./point.js";
+import PointController, {Mode as PointControllerMode, EmptyEvent} from "./point.js";
 import DaysComponent from "../components/days-list.js";
 import DayComponent from "../components/day.js";
 import {render} from "../utils/render.js";
@@ -28,7 +28,7 @@ const getSortedEvents = (events, sortType) => {
 const renderEvents = (container, events, onDataChange, onViewChange) => {
   return events.map((event) => {
     const pointController = new PointController(container, onDataChange, onViewChange);
-    pointController.render(event);
+    pointController.render(event, PointControllerMode.DEFAULT);
     return pointController;
   });
 };
@@ -83,10 +83,27 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._eventsModel.updateEvents(oldData.id, newData);
+    if (oldData === EmptyEvent) {
+      this._creatingEvent = null;
+      if (newData === null) {
+        pointController.destroy();
+        this._updateEvents();
+      } else {
+        this._eventsModel.addEvent(newData);
+        pointController.render(newData, PointControllerMode.DEFAULT);
 
-    if (isSuccess) {
-      pointController.render(newData);
+
+        this._showedEventControllers = [].concat(pointController, this._showedEventControllers);
+      }
+    } else if (newData === null) {
+      this._eventsModel.removeEvent(oldData.id);
+      this._updateEvents();
+    } else {
+      const isSuccess = this._eventsModel.updateEvents(oldData.id, newData);
+
+      if (isSuccess) {
+        pointController.render(newData, PointControllerMode.DEFAULT);
+      }
     }
   }
 

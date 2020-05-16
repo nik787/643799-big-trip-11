@@ -3,7 +3,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {getDateString, getTimeString} from "../utils/common.js";
-import {typeEventsTranfer, typeEventsActivity, typeEventOffer} from "../mock/event.js";
+import {typeEventsTranfer, typeEventsActivity, typeEventOffer, destinationList} from "../mock/event.js";
 
 const eventPhotosTemplate = (pictures) => {
   return pictures.map((picture) => {
@@ -12,7 +12,16 @@ const eventPhotosTemplate = (pictures) => {
 };
 
 const destinationTemplate = (destination) => {
-  const {pictures, description} = destination;
+  const {name} = destination;
+  let description = ``;
+  let pictures = [];
+  destinationList.forEach((element) => {
+    if (element.name.includes(name)) {
+      description = element.description;
+      pictures = element.pictures;
+    }
+  });
+
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -68,7 +77,10 @@ const eventTypeTemplate = (types, eventType) => {
 };
 
 const tripEventEditTemplate = (event) => {
-  const {type, destination, offers, basePrice, dateFrom, dateTo, isFavorite} = event;
+  const {type, destination, basePrice, dateFrom, dateTo, isFavorite, offers} = event;
+
+  // const offers = typeEventOffer[type.toLowerCase()];
+console.log(event);
 
   let types = type[0].toUpperCase() + type.slice(1);
   if (types === `Check`) {
@@ -165,6 +177,23 @@ const tripEventEditTemplate = (event) => {
   );
 };
 
+const parseFormData = (formData) => {
+  const offersList = formData.getAll(`checkbox`);
+  console.log(offersList);
+
+
+  return {
+    type: formData.get(`event-type`),
+    dateFrom: new Date(formData.get(`event-start-time`)),
+    dateTo: new Date(formData.get(`event-end-time`)),
+    destination: {
+      name: formData.get(`event-destination`),
+    },
+    basePrice: formData.get(`event-price`),
+    offers: offersList,
+  };
+};
+
 export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -198,6 +227,15 @@ export default class EventEdit extends AbstractSmartComponent {
     this.rerender();
   }
 
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+
   _applyFlatpickr() {
     if (this._flatpickr) {
       // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
@@ -212,7 +250,7 @@ export default class EventEdit extends AbstractSmartComponent {
       altInput: true,
       allowInput: true,
       enableTime: true,
-      dateFormat: `d-m-y`,
+      dateFormat: `d/m/y H:i`,
       altFormat: `d/m/y H:i`,
       defaultDate: this._event.dateFrom || `today`,
     });
@@ -220,7 +258,7 @@ export default class EventEdit extends AbstractSmartComponent {
       altInput: true,
       allowInput: true,
       enableTime: true,
-      dateFormat: `d-m-y`,
+      dateFormat: `d/m/y H:i`,
       altFormat: `d/m/y H:i`,
       defaultDate: this._event.dateTo || `today`,
     });
@@ -228,15 +266,9 @@ export default class EventEdit extends AbstractSmartComponent {
 
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
 
-      const formData = new FormData(evt.target);
-
-      handler(Object.assign({}, this._event, {
-        type: formData.get(`event-type`)
-      }));
-    });
     this._submitHandler = handler;
   }
 
@@ -266,21 +298,45 @@ export default class EventEdit extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
+  getData() {
+    const form = this.getElement().querySelector(`.event--edit`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
 
     element.querySelectorAll(`.event__type-list input`).forEach((type) => {
       type.addEventListener(`click`, (evt) => {
+
         if (evt.target.value === `check-in`) {
           this._event.type = `Check`;
+          console.log(this._event.type);
+
         } else {
           this._event.type = evt.target.value;
         }
         this._event.offers = typeEventOffer[this._event.type.toLowerCase()];
+        console.log(this._event.offers);
 
+        this._event.offers.forEach((offer) => {
+          offer.isChecked = false;
+        });
         this.rerender();
       });
 
+    });
+
+    element.querySelectorAll(`.event__offer-checkbox`).forEach((offer) => {
+      offer.addEventListener(`click`, () => {
+        if (offer.isChecked !== true) {
+          offer.isChecked = true;
+        } else {
+          offer.isChecked = false;
+        }
+      });
     });
 
     element.querySelector(`.event__input--price`)
